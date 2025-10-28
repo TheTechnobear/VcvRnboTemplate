@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Rack",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${env:RACK_DIR}/Rack",
+            "args": [ "-d"],
+            "stopAtEntry": false,
+            "cwd": "${env:RACK_DIR}",
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "build"
+        }
+    ]
+}

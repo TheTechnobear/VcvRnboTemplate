@@ -1,0 +1,16 @@
+**/.DS_Store
+*.swp
+*.lock
+profile
+err.txt
+
+**/*.o
+**/*.so
+**/*.dylib
+**/*.zip
+
+**/build.*
+**/build/*
+
+
+**/*.mmplugin

@@ -1,0 +1,25 @@
+{
+  "slug": "__BRAND__",
+  "name": "__BRAND__",
+  "version": "2.0.0",
+  "license": "GPL-3.0-or-later",
+  "brand": "__BRAND__",
+  "author": "__AUTHOR__",
+  "authorEmail": "__EMAIL__",
+  "authorUrl": "__URL__",
+  "pluginUrl": "__URL__",
+  "manualUrl": "",
+  "sourceUrl": "",
+  "donateUrl": "",
+  "changelogUrl": "",
+  "modules": [
+    {
+      "slug": "Demo",
+      "name": "Demo",
+      "description": "Demo",
+      "tags": [
+        "demo"
+      ]
+    }
+  ]
+}

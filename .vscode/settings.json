@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "*.svg": "xml",
+        "locale": "cpp",
+        "string": "cpp",
+        "__locale": "cpp",
+        "expected": "cpp",
+        "new": "cpp",
+        "array": "cpp"
+    }
+}

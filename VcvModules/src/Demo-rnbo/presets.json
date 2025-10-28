@@ -1,0 +1,19 @@
+[
+  {
+    "name": "testvca",
+    "preset": {
+      "gain1": {
+        "value": 0
+      },
+      "gain2": {
+        "value": 0
+      },
+      "gain3": {
+        "value": 0
+      },
+      "gain4": {
+        "value": 0
+      }
+    }
+  }
+]

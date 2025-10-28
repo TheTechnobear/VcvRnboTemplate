@@ -1,0 +1,18 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "local build",
+            "displayName": "local build",
+            "description": "local build",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build.cmake",
+            "cacheVariables": {
+    	    	"TOOLCHAIN_BASE_DIR" : "/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin",
+        		"METAMODULE_SDK_DIR" : "metamodule-plugin-sdk",
+                "CMAKE_BUILD_TYPE" : "Release",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/build.cmake"
+            }
+        }
+    ]
+}
