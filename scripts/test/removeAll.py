@@ -14,7 +14,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("Error: This script must be run from the project base directory.")
+        print("❌ This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 helpers/removeAll.py")
@@ -66,7 +66,7 @@ def remove_module(module_name, force=False):
     remove_script = project_root / "scripts" / "removeModule.py"
     
     if not remove_script.exists():
-        print(f"Error: {remove_script} not found!")
+        print(f"❌ {remove_script} not found!")
         return False
     
     # Build command
@@ -145,7 +145,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ {e}")
 
 if __name__ == "__main__":
     main()

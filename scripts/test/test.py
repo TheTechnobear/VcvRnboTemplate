@@ -15,7 +15,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("Error: This script must be run from the project base directory.")
+        print("❌ This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/test/test.py")
@@ -94,7 +94,7 @@ def create_test_plugin():
     create_plugin_script = project_root / "scripts" / "createPlugin.py"
     
     if not create_plugin_script.exists():
-        print(f"Error: {create_plugin_script} not found!")
+        print(f"❌ {create_plugin_script} not found!")
         return False
     
     # Plugin details for testing
@@ -116,7 +116,7 @@ def create_test_module(module_name, description, tags):
     create_module_script = project_root / "scripts" / "createModule.py"
     
     if not create_module_script.exists():
-        print(f"Error: {create_module_script} not found!")
+        print(f"❌ {create_module_script} not found!")
         return False
     
     # Module details

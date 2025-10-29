@@ -14,7 +14,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("Error: This script must be run from the project base directory.")
+        print("❌ This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/createPlugin.py")
@@ -97,7 +97,7 @@ def copy_and_process_vcv_plugin_json(replacements):
     
     # Write to target
     os.makedirs(target_path.parent, exist_ok=True)
-    with open(target_path, 'w') as f:
+    with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
     print(f"✓ Created VCV plugin.json at {target_path}")
@@ -118,7 +118,7 @@ def copy_and_process_metamodule_plugin_json(replacements):
     processed_content = replace_template_placeholders(content, replacements)
     
     # Write to target
-    with open(target_path, 'w') as f:
+    with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
     print(f"✓ Created MetaModule plugin-mm.json at {target_path}")
@@ -140,7 +140,7 @@ def copy_and_process_vcv_makefile(replacements):
     
     # Write to target
     os.makedirs(target_path.parent, exist_ok=True)
-    with open(target_path, 'w') as f:
+    with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
     print(f"✓ Created VCV Makefile at {target_path}")
@@ -161,7 +161,7 @@ def copy_and_process_metamodule_cmake(replacements):
     processed_content = replace_template_placeholders(content, replacements)
     
     # Write to target
-    with open(target_path, 'w') as f:
+    with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
     print(f"✓ Created MetaModule CMakeLists.txt at {target_path}")
@@ -178,7 +178,7 @@ def copy_vcv_plugin_sources():
     os.makedirs(target_hpp.parent, exist_ok=True)
     with open(template_hpp, 'r') as f:
         content = f.read()
-    with open(target_hpp, 'w') as f:
+    with open(target_hpp, 'w', newline='\n') as f:
         f.write(content)
     print(f"✓ Created VCV plugin.hpp at {target_hpp}")
     
@@ -189,7 +189,7 @@ def copy_vcv_plugin_sources():
     print(f"Copying VCV plugin.cpp template from {template_cpp} to {target_cpp}")
     with open(template_cpp, 'r') as f:
         content = f.read()
-    with open(target_cpp, 'w') as f:
+    with open(target_cpp, 'w', newline='\n') as f:
         f.write(content)
     print(f"✓ Created VCV plugin.cpp at {target_cpp}")
 
@@ -229,7 +229,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ {e}")
 
 if __name__ == "__main__":
     main()

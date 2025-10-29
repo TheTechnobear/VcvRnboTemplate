@@ -15,7 +15,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("Error: This script must be run from the project base directory.")
+        print("❌ This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/removeModule.py ModuleName")
@@ -30,12 +30,12 @@ def check_plugin_exists():
     mm_plugin_json = project_root / "plugin-mm.json"
     
     if not vcv_plugin_json.exists():
-        print("Error: VcvModules/plugin.json not found.")
+        print("❌ VcvModules/plugin.json not found.")
         print("Please run 'python3 scripts/createPlugin.py' first to create the plugin.")
         sys.exit(1)
     
     if not mm_plugin_json.exists():
-        print("Error: plugin-mm.json not found.")
+        print("❌ plugin-mm.json not found.")
         print("Please run 'python3 scripts/createPlugin.py' first to create the plugin.")
         sys.exit(1)
     
@@ -59,7 +59,7 @@ def check_module_exists(module_name):
         dirs_to_delete.append(rnbo_dir)
     
     if not files_to_delete and not dirs_to_delete:
-        print(f"Error: Module '{module_name}' not found.")
+        print(f"❌ Module '{module_name}' not found.")
         print(f"Expected files:")
         print(f"  - {module_cpp}")
         print(f"  - {rnbo_dir}/")
@@ -135,7 +135,7 @@ def remove_from_plugin_hpp(module_name):
     updated_lines = [line for line in lines if line.strip() != model_declaration]
     
     # Write back to file
-    with open(plugin_hpp_path, 'w') as f:
+    with open(plugin_hpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(updated_lines))
     
     print(f"✓ Removed model declaration from plugin.hpp: {model_declaration}")
@@ -167,7 +167,7 @@ def remove_from_plugin_cpp(module_name):
     updated_lines = [line for line in lines if line.strip() != model_add and line != model_add_with_indent]
     
     # Write back to file
-    with open(plugin_cpp_path, 'w') as f:
+    with open(plugin_cpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(updated_lines))
     
     print(f"✓ Removed model from plugin.cpp: {model_add}")
@@ -203,7 +203,7 @@ def remove_from_vcv_makefile(module_name):
         updated_lines.append(line)
     
     # Write back to file
-    with open(makefile_path, 'w') as f:
+    with open(makefile_path, 'w', newline='\n') as f:
         f.write('\n'.join(updated_lines))
     
     print(f"✓ Removed {module_source} from VCV Makefile")
@@ -238,7 +238,7 @@ def remove_from_metamodule_cmake(module_name):
         updated_lines.append(line)
     
     # Write back to file
-    with open(cmake_path, 'w') as f:
+    with open(cmake_path, 'w', newline='\n') as f:
         f.write('\n'.join(updated_lines))
     
     print(f"✓ Removed {module_source} from MetaModule CMakeLists.txt")
@@ -283,7 +283,7 @@ def remove_from_plugin_json(module_name):
         plugin_data['modules'] = updated_modules
         
         # Write back to file with proper formatting
-        with open(plugin_json_path, 'w') as f:
+        with open(plugin_json_path, 'w', newline='\n') as f:
             json.dump(plugin_data, f, indent=2)
         
         if removed_module:
@@ -296,7 +296,7 @@ def remove_from_plugin_json(module_name):
         return True
         
     except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON in {plugin_json_path}: {e}")
+        print(f"❌ Invalid JSON in {plugin_json_path}: {e}")
         return False
     except Exception as e:
         print(f"Error updating plugin.json: {e}")
@@ -341,7 +341,7 @@ def remove_from_plugin_mm_json(module_name):
         plugin_data['MetaModuleIncludedModules'] = updated_modules
         
         # Write back to file with proper formatting
-        with open(plugin_mm_json_path, 'w') as f:
+        with open(plugin_mm_json_path, 'w', newline='\n') as f:
             json.dump(plugin_data, f, indent=2)
         
         if removed_module:
@@ -354,7 +354,7 @@ def remove_from_plugin_mm_json(module_name):
         return True
         
     except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON in {plugin_mm_json_path}: {e}")
+        print(f"❌ Invalid JSON in {plugin_mm_json_path}: {e}")
         return False
     except Exception as e:
         print(f"Error updating plugin-mm.json: {e}")
@@ -413,7 +413,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ {e}")
 
 if __name__ == "__main__":
     main()

@@ -13,7 +13,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("Error: This script must be run from the project base directory.")
+        print("❌ This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/createModule.py")
@@ -28,12 +28,12 @@ def check_plugin_exists():
     mm_plugin_json = project_root / "plugin-mm.json"
     
     if not vcv_plugin_json.exists():
-        print("Error: VcvModules/plugin.json not found.")
+        print("❌ VcvModules/plugin.json not found.")
         print("Please run 'python3 scripts/createPlugin.py' first to create the plugin.")
         sys.exit(1)
     
     if not mm_plugin_json.exists():
-        print("Error: plugin-mm.json not found.")
+        print("❌ plugin-mm.json not found.")
         print("Please run 'python3 scripts/createPlugin.py' first to create the plugin.")
         sys.exit(1)
     
@@ -66,11 +66,11 @@ def copy_and_process_template(module_name):
     target_path = project_root / "VcvModules" / "src" / f"{module_name}.cpp"
     
     if not template_path.exists():
-        print(f"Error: Template file not found at {template_path}")
+        print(f"❌ Template file not found at {template_path}")
         sys.exit(1)
     
     if target_path.exists():
-        print(f"Error: Module file {target_path} already exists!")
+        print(f"❌ Module file {target_path} already exists!")
         overwrite = input("Overwrite existing file? (y/N): ").strip().lower()
         if overwrite != 'y':
             print("Module creation cancelled.")
@@ -89,7 +89,7 @@ def copy_and_process_template(module_name):
     os.makedirs(target_path.parent, exist_ok=True)
     
     # Write processed content
-    with open(target_path, 'w') as f:
+    with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
     print(f"✓ Created module source file: {target_path}")
@@ -114,7 +114,7 @@ def update_plugin_hpp(module_name):
     plugin_hpp_path = project_root / "VcvModules" / "src" / "plugin.hpp"
     
     if not plugin_hpp_path.exists():
-        print(f"Error: {plugin_hpp_path} not found!")
+        print(f"❌ {plugin_hpp_path} not found!")
         return False
     
     # Read current content
@@ -147,7 +147,7 @@ def update_plugin_hpp(module_name):
     lines.insert(insert_position, model_declaration)
     
     # Write back to file
-    with open(plugin_hpp_path, 'w') as f:
+    with open(plugin_hpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(lines))
     
     print(f"✓ Added model declaration to plugin.hpp: {model_declaration}")
@@ -159,7 +159,7 @@ def update_plugin_cpp(module_name):
     plugin_cpp_path = project_root / "VcvModules" / "src" / "plugin.cpp"
     
     if not plugin_cpp_path.exists():
-        print(f"Error: {plugin_cpp_path} not found!")
+        print(f"❌ {plugin_cpp_path} not found!")
         return False
     
     # Read current content
@@ -195,14 +195,14 @@ def update_plugin_cpp(module_name):
                 break
     
     if insert_position == -1:
-        print("Error: Could not find appropriate location to add model in plugin.cpp")
+        print("❌ Could not find appropriate location to add model in plugin.cpp")
         return False
     
     # Insert the new addModel call with proper indentation
     lines.insert(insert_position, f"\tp->addModel(model{module_name});")
     
     # Write back to file
-    with open(plugin_cpp_path, 'w') as f:
+    with open(plugin_cpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(lines))
     
     print(f"✓ Added model to plugin.cpp: {model_add}")
@@ -243,7 +243,7 @@ def update_vcv_makefile(module_name):
         content = '\n'.join(lines)
     
     # Write back to file
-    with open(makefile_path, 'w') as f:
+    with open(makefile_path, 'w', newline='\n') as f:
         f.write(content)
     
     print(f"✓ Added {module_source} to VCV Makefile")
@@ -284,7 +284,7 @@ def update_metamodule_cmake(module_name):
         content = '\n'.join(lines)
     
     # Write back to file
-    with open(cmake_path, 'w') as f:
+    with open(cmake_path, 'w', newline='\n') as f:
         f.write(content)
     
     print(f"✓ Added {module_source} to MetaModule CMakeLists.txt")
@@ -347,7 +347,7 @@ def update_plugin_json(module_name, module_details):
         plugin_data['modules'] = modules
         
         # Write back to file with proper formatting
-        with open(plugin_json_path, 'w') as f:
+        with open(plugin_json_path, 'w', newline='\n') as f:
             json.dump(plugin_data, f, indent=2)
         
         print(f"✓ Added module to plugin.json:")
@@ -359,7 +359,7 @@ def update_plugin_json(module_name, module_details):
         return True
         
     except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON in {plugin_json_path}: {e}")
+        print(f"❌ Invalid JSON in {plugin_json_path}: {e}")
         return False
     except Exception as e:
         print(f"Error updating plugin.json: {e}")
@@ -398,7 +398,7 @@ def update_plugin_mm_json(module_name, module_details):
         plugin_data['MetaModuleIncludedModules'] = modules
         
         # Write back to file with proper formatting
-        with open(plugin_mm_json_path, 'w') as f:
+        with open(plugin_mm_json_path, 'w', newline='\n') as f:
             json.dump(plugin_data, f, indent=2)
         
         print(f"✓ Added module to plugin-mm.json:")
@@ -409,7 +409,7 @@ def update_plugin_mm_json(module_name, module_details):
         return True
         
     except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON in {plugin_mm_json_path}: {e}")
+        print(f"❌ Invalid JSON in {plugin_mm_json_path}: {e}")
         return False
     except Exception as e:
         print(f"Error updating plugin-mm.json: {e}")
@@ -464,7 +464,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ {e}")
 
 if __name__ == "__main__":
     main()

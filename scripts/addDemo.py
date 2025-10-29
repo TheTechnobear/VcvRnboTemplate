@@ -35,7 +35,7 @@ def check_plugin_exists():
     plugin_mm_json = project_root / "plugin-mm.json"
     
     if not plugin_json.exists() or not plugin_mm_json.exists():
-        print("❌ Error: Plugin configuration files not found!")
+        print("❌ Plugin configuration files not found!")
         print("You need to create a plugin first using createPlugin.py")
         print("\nRun: python3 scripts/createPlugin.py")
         return False
@@ -48,7 +48,7 @@ def create_demo_module():
     create_module_script = project_root / "scripts" / "createModule.py"
     
     if not create_module_script.exists():
-        print(f"❌ Error: {create_module_script} not found!")
+        print(f"❌ {create_module_script} not found!")
         return False
     
     print("🔧 Creating Demo module...")
@@ -77,7 +77,7 @@ audio, demo
             return False
             
     except subprocess.TimeoutExpired:
-        print("❌ Error: createModule.py timed out")
+        print("❌ createModule.py timed out")
         return False
     except Exception as e:
         print(f"❌ Error running createModule.py: {e}")
@@ -94,11 +94,11 @@ def copy_demo_rnbo_files():
     demo_target_dir = project_root / "VcvModules" / "src" / "Demo-rnbo"
     
     if not demo_template_dir.exists():
-        print(f"❌ Error: Demo template directory not found: {demo_template_dir}")
+        print(f"❌ Demo template directory not found: {demo_template_dir}")
         return False
     
     if not demo_target_dir.exists():
-        print(f"❌ Error: Demo module directory not found: {demo_target_dir}")
+        print(f"❌ Demo module directory not found: {demo_target_dir}")
         print("The Demo module should have been created by createModule.py")
         return False
     

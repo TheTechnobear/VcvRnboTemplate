@@ -21,7 +21,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("❌ Error: This script must be run from the project base directory.")
+        print("❌ This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/check.py")
@@ -48,7 +48,7 @@ def check_command_available(command, description):
         return False
 
 def check_arm_compiler():
-    """Check for ARM compiler availability"""
+    """Check for ARM compiler availability with Windows support"""
     arm_commands = [
         'arm-none-eabi-gcc',
         'arm-none-eabi-g++',
@@ -57,6 +57,7 @@ def check_arm_compiler():
     
     missing = []
     for cmd in arm_commands:
+        # shutil.which automatically handles .exe on Windows
         if not shutil.which(cmd):
             missing.append(cmd)
     
@@ -65,6 +66,15 @@ def check_arm_compiler():
         return True
     else:
         print(f"❌ ARM toolchain missing: {', '.join(missing)}")
+        
+        # Windows-specific guidance
+        if os.name == 'nt':  # Windows
+            print("   📝 Windows users: Ensure ARM GNU Toolchain is installed and added to PATH")
+            print("   💡 Common install locations:")
+            print("      - C:\\Program Files (x86)\\Arm GNU Toolchain\\*\\bin")
+            print("      - C:\\Program Files\\Arm GNU Toolchain\\*\\bin")
+            print("   🔧 Add the toolchain bin directory to your system PATH environment variable")
+        
         return False
 
 def check_environment_setup():
@@ -94,7 +104,10 @@ def check_environment_setup():
     
     # Check ARM compiler
     if not check_arm_compiler():
-        issues.append("Install ARM GNU Toolchain (arm-none-eabi-gcc)")
+        if os.name == 'nt':  # Windows
+            issues.append("Install ARM GNU Toolchain and add to PATH (see Windows-specific guidance above)")
+        else:
+            issues.append("Install ARM GNU Toolchain (arm-none-eabi-gcc)")
     
     if issues:
         print(f"\n❌ Environment setup issues found:")
@@ -156,6 +169,22 @@ def check_module_status(module_slug):
     if not any(rnbo_dir.iterdir()):
         return "no_export", "RNBO directory exists but no export files found"
     
+    # Check for common incorrect export filenames
+    incorrect_cpp = rnbo_dir / f"{module_slug}.cpp"
+    if incorrect_cpp.exists():
+        return "wrong_extension", f"Found {module_slug}.cpp but need {module_slug}.cpp.h - incorrect export format from Max"
+    
+    # Check for any .cpp files (without .h)
+    cpp_files = list(rnbo_dir.glob("*.cpp"))
+    if cpp_files:
+        return "wrong_extension", f"Found .cpp file: {cpp_files[0].name} but need .cpp.h - check Max export settings"
+    
+    # Check for other common files
+    files_found = list(rnbo_dir.iterdir())
+    if files_found:
+        file_names = [f.name for f in files_found]
+        return "unknown_files", f"RNBO directory contains: {', '.join(file_names)} but missing {module_slug}.cpp.h"
+    
     return "unknown_files", f"RNBO directory contains files but no .cpp.h export"
 
 def check_project_status():
@@ -213,9 +242,13 @@ def check_project_status():
             print(f"   ⚠️  {message}")
             issues.append(f"Module {module_slug}: Re-export with correct name '{module_slug}.cpp.h'")
             all_complete = False
+        elif status == "wrong_extension":
+            print(f"   ⚠️  {message}")
+            issues.append(f"Module {module_slug}: Re-export from Max using 'C++ Code Export' format (not 'Audio Unit')")
+            all_complete = False
         else:
             print(f"   ⚠️  {message}")
-            issues.append(f"Module {module_slug}: Check RNBO export directory")
+            issues.append(f"Module {module_slug}: Check RNBO export directory and re-export as '{module_slug}.cpp.h'")
             all_complete = False
     
     if all_complete:
@@ -254,7 +287,7 @@ def main():
         print("\n\nOperation cancelled by user.")
         return 1
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\n❌ {e}")
         return 1
 
 if __name__ == "__main__":
