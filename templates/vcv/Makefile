@@ -13,8 +13,8 @@ LDFLAGS +=
 FLAGS += -Isrc -Iinc/rnbo-export/common 
 
 SOURCES += \
-src/Demo.cpp \
-src/plugin.cpp
+src/plugin.cpp \
+__MODULE_SOURCES__
 
 # Add files to the ZIP package when running `make dist`
 # The compiled plugin and "plugin.json" are automatically added.

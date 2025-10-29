@@ -1,8 +1,9 @@
 {
-  "slug": "__BRAND__",
-  "name": "__BRAND__",
+  "slug": "__SLUG__",
+  "name": "__NAME__",
   "version": "2.0.0",
   "license": "GPL-3.0-or-later",
+  "description" : "__DESCRIPTION__",
   "brand": "__BRAND__",
   "author": "__AUTHOR__",
   "authorEmail": "__EMAIL__",
@@ -13,13 +14,5 @@
   "donateUrl": "",
   "changelogUrl": "",
   "modules": [
-    {
-      "slug": "Demo",
-      "name": "Demo",
-      "description": "Demo",
-      "tags": [
-        "demo"
-      ]
-    }
   ]
 }

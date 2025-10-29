@@ -1,0 +1,10 @@
+{
+	"MetaModuleBrandName": "__NAME__",
+	"MetaModuleBrandSlug": "__SLUG__",
+	"MetaModulePluginMaintainer": "__AUTHOR__",
+	"MetaModulePluginMaintainerEmail": "__EMAIL__",
+	"MetaModulePluginMaintainerUrl": "__URL__",
+	"MetaModuleDescription": "__DESCRIPTION__",
+	"MetaModuleIncludedModules": [
+	]
+}

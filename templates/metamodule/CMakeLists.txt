@@ -27,14 +27,12 @@ set(EXTERN_DIR ${CMAKE_CURRENT_LIST_DIR}/VcvModules/extern)
 target_include_directories(VcvMetaModules PRIVATE
     ${SOURCE_DIR}/src
     ${SOURCE_DIR}/inc/rnbo-export/common
-    ${MUTABLE_DIR}
-    # ${CMAKE_CURRENT_LIST_DIR}
 )
 
 target_sources(VcvMetaModules
     PRIVATE
     ${SOURCE_DIR}/src/plugin.cpp
-    ${SOURCE_DIR}/src/Demo.cpp
+    __MODULE_SOURCES__
 )
 
 
@@ -46,7 +44,7 @@ endif()
 
 create_plugin(
     SOURCE_LIB VcvMetaModules # This is the cmake target name (defined in add_target)
-    PLUGIN_NAME __BRAND__ # This must match the brand "slug" used in VCV Rack
+    PLUGIN_NAME __SLUG__ # This must match the brand "slug" used in VCV Rack
     PLUGIN_JSON ${SOURCE_DIR}/plugin.json # Path to the plugin.json file used by VCV Rack
     SOURCE_ASSETS ${CMAKE_CURRENT_LIST_DIR}/assets # Path to the assets/ dir containing the PNGs
     DESTINATION ${INSTALL_DIR}/ # Dir where plugin .mmplugin file should be put
