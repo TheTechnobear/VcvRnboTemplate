@@ -70,7 +70,7 @@ This eliminates manual UI coding - the widget adapts to any RNBO patch's paramet
 
 **MetaModule (Hardware Target):** Uses CMake with ARM toolchain in base directory:
 - ARM toolchain configured in `CMakePresets.json`
-- Build with: `cmake --preset "local build"` then `cmake --build build.cmake`
+- Build with: `cmake --fresh -B build` then `cmake --build build`
 - Requires MetaModule SDK and ARM GNU Toolchain
 
 ## Development Workflow

@@ -1,0 +1,261 @@
+#!/usr/bin/env python3
+"""
+VCV Rack RNBO Template Setup and Status Checker
+
+This script checks that the development environment is properly configured
+and provides guidance on the current project status.
+"""
+
+import os
+import sys
+import json
+import shutil
+import subprocess
+from pathlib import Path
+
+def ensure_run_from_base_directory():
+    """Ensure script is run from the project base directory"""
+    current_dir = Path.cwd()
+    
+    # Check if we're in the base directory by looking for expected files/directories
+    expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
+    
+    if not all((current_dir / item).exists() for item in expected_items):
+        print("❌ Error: This script must be run from the project base directory.")
+        print(f"Current directory: {current_dir}")
+        print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
+        print("Example: python3 scripts/check.py")
+        sys.exit(1)
+    
+    return current_dir
+
+def check_file_exists(file_path, description):
+    """Check if a file exists and report status"""
+    if file_path.exists():
+        print(f"✅ {description}")
+        return True
+    else:
+        print(f"❌ {description}")
+        return False
+
+def check_command_available(command, description):
+    """Check if a command is available in PATH"""
+    if shutil.which(command):
+        print(f"✅ {description}")
+        return True
+    else:
+        print(f"❌ {description}")
+        return False
+
+def check_arm_compiler():
+    """Check for ARM compiler availability"""
+    arm_commands = [
+        'arm-none-eabi-gcc',
+        'arm-none-eabi-g++',
+        'arm-none-eabi-objcopy'
+    ]
+    
+    missing = []
+    for cmd in arm_commands:
+        if not shutil.which(cmd):
+            missing.append(cmd)
+    
+    if not missing:
+        print("✅ ARM toolchain (arm-none-eabi-gcc) available")
+        return True
+    else:
+        print(f"❌ ARM toolchain missing: {', '.join(missing)}")
+        return False
+
+def check_environment_setup():
+    """Check basic environment setup"""
+    print("🔧 Checking Development Environment Setup")
+    print("=" * 50)
+    
+    project_root = Path.cwd()
+    issues = []
+    
+    # Check MetaModule SDK
+    metamodule_version = project_root / "metamodule-plugin-sdk" / "version.hh"
+    if not check_file_exists(metamodule_version, "MetaModule SDK (submodule initialized)"):
+        issues.append("Run: git submodule update --init --recursive")
+    
+    # Check Rack SDK
+    rack_sdk_plugin = project_root / "Rack-SDK" / "plugin.mk"
+    if not check_file_exists(rack_sdk_plugin, "VCV Rack SDK (Rack-SDK/plugin.mk)"):
+        issues.append("Download and unpack Rack SDK to Rack-SDK/ directory")
+    
+    # Check build tools
+    if not check_command_available("make", "make command available"):
+        issues.append("Install make (part of build tools)")
+    
+    if not check_command_available("cmake", "cmake command available"):
+        issues.append("Install cmake")
+    
+    # Check ARM compiler
+    if not check_arm_compiler():
+        issues.append("Install ARM GNU Toolchain (arm-none-eabi-gcc)")
+    
+    if issues:
+        print(f"\n❌ Environment setup issues found:")
+        for i, issue in enumerate(issues, 1):
+            print(f"   {i}. {issue}")
+        print("\nPlease fix these issues before continuing.")
+        return False
+    else:
+        print("\n✅ Environment setup is complete!")
+        return True
+
+def check_plugin_exists():
+    """Check if plugin has been created"""
+    project_root = Path.cwd()
+    plugin_json = project_root / "VcvModules" / "plugin.json"
+    plugin_mm_json = project_root / "plugin-mm.json"
+    
+    if plugin_json.exists() and plugin_mm_json.exists():
+        return True, plugin_json
+    else:
+        return False, None
+
+def get_modules_from_plugin_json(plugin_json_path):
+    """Get list of modules from plugin.json"""
+    try:
+        with open(plugin_json_path, 'r') as f:
+            data = json.load(f)
+        return data.get('modules', [])
+    except Exception as e:
+        print(f"❌ Error reading plugin.json: {e}")
+        return []
+
+def check_module_status(module_slug):
+    """Check the status of a specific module"""
+    project_root = Path.cwd()
+    
+    # Check if module source file exists
+    module_cpp = project_root / "VcvModules" / "src" / f"{module_slug}.cpp"
+    if not module_cpp.exists():
+        return "missing_source", f"Module source file missing: {module_cpp}"
+    
+    # Check RNBO directory
+    rnbo_dir = project_root / "VcvModules" / "src" / f"{module_slug}-rnbo"
+    if not rnbo_dir.exists():
+        return "missing_rnbo_dir", f"RNBO directory missing: {rnbo_dir}"
+    
+    # Check for RNBO export files
+    expected_cpp_h = rnbo_dir / f"{module_slug}.cpp.h"
+    
+    if expected_cpp_h.exists():
+        return "complete", "Module complete with RNBO export"
+    
+    # Check for any .cpp.h files
+    cpp_h_files = list(rnbo_dir.glob("*.cpp.h"))
+    if cpp_h_files:
+        return "wrong_name", f"RNBO export found but wrong name: {cpp_h_files[0].name} (should be {module_slug}.cpp.h)"
+    
+    # Check if directory is empty
+    if not any(rnbo_dir.iterdir()):
+        return "no_export", "RNBO directory exists but no export files found"
+    
+    return "unknown_files", f"RNBO directory contains files but no .cpp.h export"
+
+def check_project_status():
+    """Check current project status and provide guidance"""
+    print("\n🎯 Checking Project Status")
+    print("=" * 50)
+    
+    # Check if plugin exists
+    plugin_exists, plugin_json_path = check_plugin_exists()
+    
+    if not plugin_exists:
+        print("❌ No plugin found")
+        print("\n📋 Next step: Create a plugin")
+        print("   Run: python3 scripts/createPlugin.py")
+        return
+    
+    print("✅ Plugin configuration found")
+    
+    # Get modules from plugin.json
+    modules = get_modules_from_plugin_json(plugin_json_path)
+    
+    if not modules:
+        print("❌ No modules defined in plugin")
+        print("\n📋 Next step: Create a module")
+        print("   Run: python3 scripts/createModule.py")
+        return
+    
+    print(f"✅ Found {len(modules)} module(s) in plugin configuration")
+    
+    # Check each module
+    all_complete = True
+    issues = []
+    
+    for module in modules:
+        module_slug = module.get('slug', 'unknown')
+        print(f"\n🔍 Checking module: {module_slug}")
+        
+        status, message = check_module_status(module_slug)
+        
+        if status == "complete":
+            print(f"   ✅ {message}")
+        elif status == "missing_source":
+            print(f"   ❌ {message}")
+            issues.append(f"Module {module_slug}: Run 'python3 scripts/createModule.py' to recreate")
+            all_complete = False
+        elif status == "missing_rnbo_dir":
+            print(f"   ❌ {message}")
+            issues.append(f"Module {module_slug}: Run 'python3 scripts/createModule.py' to recreate")
+            all_complete = False
+        elif status == "no_export":
+            print(f"   ⚠️  {message}")
+            issues.append(f"Module {module_slug}: Export RNBO patch from Max to VcvModules/src/{module_slug}-rnbo/")
+            all_complete = False
+        elif status == "wrong_name":
+            print(f"   ⚠️  {message}")
+            issues.append(f"Module {module_slug}: Re-export with correct name '{module_slug}.cpp.h'")
+            all_complete = False
+        else:
+            print(f"   ⚠️  {message}")
+            issues.append(f"Module {module_slug}: Check RNBO export directory")
+            all_complete = False
+    
+    if all_complete:
+        print(f"\n🎉 All modules are complete and ready to build!")
+        print("\n📋 Next steps:")
+        print("   1. Build VCV Rack: cd VcvModules && make")
+        print("   2. Build MetaModule: cmake --fresh -B build && cmake --build build")
+    else:
+        print(f"\n❌ Issues found with modules:")
+        for i, issue in enumerate(issues, 1):
+            print(f"   {i}. {issue}")
+
+def main():
+    """Main function"""
+    try:
+        # Ensure we're in the right directory
+        project_root = ensure_run_from_base_directory()
+        print(f"Running from project directory: {project_root}")
+        
+        print("\n🧪 VCV Rack RNBO Template - Setup Checker")
+        print("=" * 60)
+        
+        # Check environment setup
+        env_ok = check_environment_setup()
+        
+        if env_ok:
+            # Check project status
+            check_project_status()
+        else:
+            print("\n⚠️  Fix environment issues before checking project status.")
+            return 1
+        
+        return 0
+        
+    except KeyboardInterrupt:
+        print("\n\nOperation cancelled by user.")
+        return 1
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
