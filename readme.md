@@ -4,7 +4,12 @@ Create VCV Rack and 4ms MetaModule plugins without programming! This project ena
 
 ## Setup
 
-### 1. Fork and Clone Repository
+### 1. Install VCV Rack Build Requirements
+
+Follow the setup instructions at [VCV Rack Building Guide](https://vcvrack.com/manual/Building) for your platform. 
+**Only complete the setup steps**, we only need build requiremetns fulfilled, we are not creating a module (yet)
+
+### 2. Fork and Clone Repository
 
 1. **Fork this repository** on GitHub:
    - Go to [https://github.com/TheTechnobear/VcvRnboTemplate](https://github.com/TheTechnobear/VcvRnboTemplate)
@@ -25,10 +30,6 @@ git remote add upstream https://github.com/TheTechnobear/VcvRnboTemplate.git
 
 This way you can save and version control your modules as you create them, and pull template improvements when available!
 
-### 2. Install VCV Rack Build Requirements
-
-Follow the setup instructions at [VCV Rack Building Guide](https://vcvrack.com/manual/Building) for your platform. 
-**Only complete the setup steps**, we only need build requiremetns fulfilled, we are not creating a module (yet)
 
 ### 3. Download VCV Rack SDK
 
@@ -61,21 +62,24 @@ python3 scripts/createPlugin.py
 python3 scripts/addDemo.py
 
 # c) Build for VCV Rack desktop
-cd VcvModules && make
+cd VcvModules
+make
 
 # d) test Demo module within VCV (optional)
-cd VcvModules && make dist
+make dist
 # copy the plugin to your VCV plugins directory
 
 # e) Build for MetaModule hardware
 # from the project directory
-cmake --fresh -B build && cmake --build build
+cd ..
+cmake --fresh -B build 
+cmake --build build
 
 # f) Test module on the Metamodule (optional)
 # copy the mmplugin file to your metamodule sdcard plugins folder
 
 
-# e) remve demo plugin (optional)
+# e) remove demo plugin (optional)
 python3 scripts/removeModule Demo
 ```
 
@@ -135,12 +139,13 @@ In Max, export your RNBO patch with these **exact settings**:
 ### 6. Build VCV Module
 
 ```bash
-cd VcvModules && make
+cd VcvModules 
+make
 ```
 
 ### 7. Test in VCV Rack
 ```bash
-cd VcvModules && make dist
+make dist
 ```
 Copy the plugin to your vcv rack plugin folder
 Launch VCV Rack and test your module to ensure it works correctly on desktop.
@@ -149,7 +154,9 @@ Launch VCV Rack and test your module to ensure it works correctly on desktop.
 
 From this project directory
 ```bash
-cmake --fresh -B build && cmake --build build
+cd ..
+cmake --fresh -B build
+cmake --build build
 ```
 
 ### 9. Test on MetaModule

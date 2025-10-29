@@ -17,6 +17,8 @@ whilst 'developer' needs max/rnbo users of created plugins do not.
 
 add link to kofi
 
+credits : 4ms / vcv 
+
 support via 4ms forum
 
 'beta' status
