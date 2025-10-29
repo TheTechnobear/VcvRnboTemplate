@@ -85,19 +85,19 @@ namespace RNBO {
 
 #define FIXEDSIZEARRAYINIT(...) { }
 
-template <class ENGINE = INTERNALENGINE> class TBTestRnbo : public PatcherInterfaceImpl {
+template <class ENGINE = INTERNALENGINE> class DemoRnbo : public PatcherInterfaceImpl {
 
 friend class EngineCore;
 friend class Engine;
 friend class MinimalEngine<>;
 public:
 
-TBTestRnbo()
+DemoRnbo()
 : _internalEngine(this)
 {
 }
 
-~TBTestRnbo()
+~DemoRnbo()
 {
     deallocateSignals();
 }
@@ -565,13 +565,13 @@ void updateTime(MillisecondTime time, INTERNALENGINE*, bool inProcess = false) {
 	updateTime(time, (EXTERNALENGINE*)nullptr);
 }
 
-TBTestRnbo* operator->() {
+DemoRnbo* operator->() {
     return this;
 }
-const TBTestRnbo* operator->() const {
+const DemoRnbo* operator->() const {
     return this;
 }
-TBTestRnbo* getTopLevelPatcher() {
+DemoRnbo* getTopLevelPatcher() {
     return this;
 }
 
@@ -1244,24 +1244,24 @@ void assign_defaults()
     bool _isInitialized = false;
 };
 
-static PatcherInterface* createTBTestRnbo()
+static PatcherInterface* createDemoRnbo()
 {
-    return new TBTestRnbo<EXTERNALENGINE>();
+    return new DemoRnbo<EXTERNALENGINE>();
 }
 
 #ifndef RNBO_NO_PATCHERFACTORY
 extern "C" PatcherFactoryFunctionPtr GetPatcherFactoryFunction()
 #else
-extern "C" PatcherFactoryFunctionPtr TBTestRnboFactoryFunction()
+extern "C" PatcherFactoryFunctionPtr DemoRnboFactoryFunction()
 #endif
 {
-    return createTBTestRnbo;
+    return createDemoRnbo;
 }
 
 #ifndef RNBO_NO_PATCHERFACTORY
 extern "C" void SetLogger(Logger* logger)
 #else
-void TBTestRnboSetLogger(Logger* logger)
+void DemoRnboSetLogger(Logger* logger)
 #endif
 {
     console = logger;

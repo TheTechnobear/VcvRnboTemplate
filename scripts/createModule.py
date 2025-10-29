@@ -127,23 +127,21 @@ def update_plugin_hpp(module_name):
         print(f"✓ Model declaration for {module_name} already exists in plugin.hpp")
         return True
     
-    # Find the last extern Model* declaration and add after it
+    # Find the best insertion point: after existing model declarations or at the end
     lines = content.split('\n')
     insert_position = -1
     
+    # Look for existing model declarations first
     for i, line in enumerate(lines):
         if line.strip().startswith('extern Model* model') and line.strip().endswith(';'):
             insert_position = i + 1
     
+    # If no existing model declarations, add at the end of the file
     if insert_position == -1:
-        # No existing model declarations, add before the closing of the file
-        for i, line in enumerate(lines):
-            if line.strip() == '' and i > 0:  # Find a good insertion point
-                insert_position = i
-                break
-    
-    if insert_position == -1:
-        insert_position = len(lines) - 1  # Fallback to end of file
+        # Remove any trailing empty lines and add at the very end
+        while lines and lines[-1].strip() == '':
+            lines.pop()
+        insert_position = len(lines)
     
     # Insert the new declaration
     lines.insert(insert_position, model_declaration)
