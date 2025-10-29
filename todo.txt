@@ -1,0 +1,6 @@
+need to add to documenation details about 
+- copy vcvmodules svg
+- generate assets for mm 
+
+and/or change create module to use generic blank assets, 
+if so, create assets for differnt sizes.

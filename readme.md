@@ -148,6 +148,13 @@ Copy the mmplugin file to your metamodule sdcard plugins folder, and test on you
 
 # Further information 
 
+## Generated module code
+You only need to use createModule once for each module.
+if you wish to change the rnbo code, just re-export as you did the first time, then rebuild.
+
+also, the code generated is 'separate' from the original template, so you can modify the code if you wish.
+in this way, you can create fully customised UI (more details later), or edit the code for more advanced features.
+
 ## Editing code
 if you want to go further, then Id recommend you use a code editor to edit code.
 I use [VSCode](https://code.visualstudio.com) aka Visual Studio Code , which is free
@@ -172,7 +179,6 @@ I use [VSCode](https://code.visualstudio.com) aka Visual Studio Code , which is 
 [YourRepoName]/
 ├── Rack-SDK/             # VCV Rack SDK (download and place here)
 ├── VcvModules/           # VCV Rack plugin source
-│   ├── RackSDK/          # Alternative location for VCV Rack SDK
 │   ├── src/              # Plugin source code
 │   │   ├── plugin.hpp    # Plugin header declarations
 │   │   ├── plugin.cpp    # Plugin initialization
