@@ -81,7 +81,18 @@ python3 scripts/removeModule Demo
 
 If all builds succeed, your environment is correctly configured!
 
-## Creating RNBO Modules
+## Create Plugin
+
+if you did the above, you will have already created your plugin (which holds all your modules.
+if not, then you will need to create the plugin before creating any modules.
+
+```bash
+python3 scripts/createPlugin.py
+```
+
+
+
+## Creating RNBO Module(s)
 
 ### 1. Create RNBO Patch in Max
 
