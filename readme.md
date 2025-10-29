@@ -1,16 +1,29 @@
 # VCV Rack RNBO Template
 
-A template system for creating VCV Rack plugins from Cycling '74 RNBO audio patches. Supports dual-platform deployment: VCV Rack desktop modules and 4ms MetaModule hardware.
+Create VCV Rack and 4ms MetaModule plugins without programming! This project enables musicians and sound designers to build audio modules using Max RNBO's visual programming language. Simple scripts generate complete plugins from your RNBO patches, perfect for rapid prototyping or as a starting point for custom development. Test your DSP algorithms in Max, then seamlessly deploy to VCV Rack desktop for experimentation before finalizing on MetaModule hardware.
 
 ## Setup
 
-### 1. Download and Initialize
+### 1. Fork and Clone Repository
 
+1. **Fork this repository** on GitHub:
+   - Go to [https://github.com/TheTechnobear/VcvRnboTemplate](https://github.com/TheTechnobear/VcvRnboTemplate)
+   - Click the "Fork" button
+   - Give it a meaningful name like `MyVcvModules` or `[YourName]RnboModules`
+
+2. **Clone your fork**:
 ```bash
-git clone https://github.com/TheTechnobear/VcvRnboTemplate.git
-cd VcvRnboTemplate
+git clone https://github.com/[YourUsername]/[YourRepoName].git
+cd [YourRepoName]
 git submodule update --init --recursive
 ```
+
+3. **Set up upstream remote** (to pull template updates):
+```bash
+git remote add upstream https://github.com/TheTechnobear/VcvRnboTemplate.git
+```
+
+This way you can save and version control your modules as you create them, and pull template improvements when available!
 
 ### 2. Install VCV Rack Build Requirements
 
@@ -18,7 +31,7 @@ Follow the setup instructions at [VCV Rack Building Guide](https://vcvrack.com/m
 **Only complete the setup steps**, we only need build requiremetns fulfilled, we are not creating a module (yet)
 
 ### 3. Download VCV Rack SDK
-export
+
 Download the Rack SDK for your platform from the [VCV Rack Building Guide](https://vcvrack.com/manual/Building). Unpack the zip file and place it in root directoy of this project
 ```
 ./Rack-SDK/
@@ -91,7 +104,7 @@ VcvModules/max/YourPatchName.maxpat
 python3 scripts/createModule.py
 ```
 
-Follow the prompts to enter module name, description, and tags. This creates the module structure including the `ModuleName-rnbo/` directory for export.
+Follow the prompts to enter module name, description, and tags. This creates the module structure including the `[ModuleName]-rnbo/` directory for export.
 
 ### 5. Export RNBO Module
 
@@ -106,7 +119,7 @@ In Max, export your RNBO patch with these **exact settings**:
   - ❌ Copy C++ library code (unchecked) 
   - **Codegen Class Name**: `DemoRnbo`
 
-**Critical**: The codegen class name must be `ModuleNameRnbo` (e.g., "Demo" → "DemoRnbo").
+**Critical**: The codegen class name must be `[ModuleName]Rnbo` (e.g., "Demo" → "DemoRnbo").
 
 ### 6. Build VCV Module
 
@@ -135,6 +148,11 @@ Copy the mmplugin file to your metamodule sdcard plugins folder, and test on you
 
 # Further information 
 
+## Editing code
+if you want to go further, then Id recommend you use a code editor to edit code.
+I use [VSCode](https://code.visualstudio.com) aka Visual Studio Code , which is free
+
+
 ## External Documentation
 
 - [4ms MetaModule Plugin SDK](https://github.com/4ms/metamodule-plugin-sdk) - Complete MetaModule development documentation
@@ -151,7 +169,7 @@ Copy the mmplugin file to your metamodule sdcard plugins folder, and test on you
 ## Directory Structure
 
 ```
-VcvRnboTemplate/
+[YourRepoName]/
 ├── Rack-SDK/             # VCV Rack SDK (download and place here)
 ├── VcvModules/           # VCV Rack plugin source
 │   ├── RackSDK/          # Alternative location for VCV Rack SDK
@@ -166,3 +184,20 @@ VcvRnboTemplate/
 ├── metamodule-plugin-sdk/ # MetaModule build system
 └── plugin-mm.json        # MetaModule configuration
 ```
+
+## Updating Template
+
+To pull the latest template improvements and bug fixes:
+
+```bash
+# Fetch updates from the original template
+git fetch upstream
+
+# Merge updates into your main branch
+git merge upstream/master
+
+# Update submodules if needed
+git submodule update --init --recursive
+```
+
+**Note**: If you've customized template files or scripts, you may need to resolve merge conflicts. Your modules and plugin configurations will be preserved.
