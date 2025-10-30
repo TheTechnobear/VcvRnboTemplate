@@ -1,19 +1,14 @@
 # before release...
 
-update demo maxpat, align parameters/io... for use with customised UI tutorial later.
-
-testing 
-
 youtube video showing process.
 
 
 # post release ... and feedback
 
-customised ui tutorial
-advance customisatioin
+- customised ui tutorial (docs and video)
 
-improved generic ui - put paramters/io as widgets with labels to align properly
+- incorporate feedback from users for documentation improvements
+- tips / tricks / faq - from user feedback and issues.
 
-incorporate feedback from users for documentation improvements
-
-tips / tricks / faq - from user feedback and issues.
+- improved generic ui - put paramters/io as widgets with labels to align properly
+- sync rnbo io buffers with metamodule buffer - same size, align doProcess?
