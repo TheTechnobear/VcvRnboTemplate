@@ -1,13 +1,13 @@
-before release...
+# before release...
 
 update demo maxpat, align parameters/io... for use with customised UI tutorial later.
-multiple blank templats 5u,10u20u
 
 testing 
 
 youtube video showing process.
 
-post release ... and feedback
+
+# post release ... and feedback
 
 customised ui tutorial
 advance customisatioin

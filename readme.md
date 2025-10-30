@@ -2,6 +2,8 @@
 
 Create VCV Rack and 4ms MetaModule plugins without programming! This project enables musicians and sound designers to build audio modules using Max RNBO's visual programming language. Simple scripts generate complete plugins from your RNBO patches, perfect for rapid prototyping or as a starting point for custom development. Test your DSP algorithms in Max, then seamlessly deploy to VCV Rack desktop for experimentation before finalizing on MetaModule hardware.
 
+Learn more about RNBO visual programming at https://rnbo.cycling74.com
+
 ## Key Features
 
 - **No Programming Required** - Use visual Max RNBO patches to create modules
@@ -13,7 +15,7 @@ Create VCV Rack and 4ms MetaModule plugins without programming! This project ena
 
 ## Requirements
 
-**For Module Creation:**s
+**For Module Creation:**
 - Max 8 or 9 with RNBO 1.4.2+ (license or subscription required)
 - Development environment (free - see setup)
 
@@ -28,7 +30,7 @@ Create VCV Rack and 4ms MetaModule plugins without programming! This project ena
 
 **Note**: Commands below use the terminal/command line. Windows users should use MSYS2 MinGW 64-bit shell (see setup guide).
 
-### Test Demo (No Max Required)
+### Test Demo (No Max/RNBO Required)
 Before investing in Max/RNBO, test your setup with the included demo:
 
 ```bash
@@ -42,7 +44,10 @@ This builds a working module and confirms your setup works!
 
 ### Create Your First Module (With Max/RNBO)
 
-Once you have Max/RNBO, creating modules is simple:
+Creating your first modules is simple, though you wil need Max and RNBO.
+
+**💡 Try Before You Buy**: Cycling 74 offer a 30-day demo for Max/RNBO that includes export functionality - perfect for testing this template! Note: the demo doesn't allow saving Max patches, so you'll need to complete your patch in one session or purchase a license / subscription to save your work.
+
 
 ```bash
 # 1. Create module template
@@ -53,7 +58,7 @@ python3 scripts/createModule.py
 
 # 3. Build
 cd VcvModules && make install      # build and add to vcv rack
-cd .. && cmake --fresh -B build && cmake --build build  # For MetaModule
+cd .. && cmake --fresh -B build && cmake --build build  # For MetaModule (optional)
 ```
 
 **That's it!** Your RNBO patch is now a working VCV/MetaModule module.
@@ -85,4 +90,3 @@ Thanks to the open source communities that make this possible:
 - [VCV Rack](https://vcvrack.com) - Open source modular synthesizer  
 - [4ms Company](https://4mscompany.com) - MetaModule hardware platform
 - [Cycling '74](https://cycling74.com) - Max and RNBO visual programming
-

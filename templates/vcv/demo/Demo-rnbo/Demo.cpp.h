@@ -214,23 +214,6 @@ void initialize() {
     this->_isInitialized = true;
 }
 
-void getPreset(PatcherStateInterface& preset) {
-    this->updateTime(this->getEngine()->getCurrentTime(), (ENGINE*)nullptr);
-    preset["__presetid"] = "rnbo";
-    this->param_01_getPresetValue(getSubState(preset, "gain1"));
-    this->param_02_getPresetValue(getSubState(preset, "gain2"));
-    this->param_03_getPresetValue(getSubState(preset, "gain3"));
-    this->param_04_getPresetValue(getSubState(preset, "gain4"));
-}
-
-void setPreset(MillisecondTime time, PatcherStateInterface& preset) {
-    this->updateTime(time, (ENGINE*)nullptr);
-    this->param_01_setPresetValue(getSubState(preset, "gain1"));
-    this->param_02_setPresetValue(getSubState(preset, "gain2"));
-    this->param_03_setPresetValue(getSubState(preset, "gain3"));
-    this->param_04_setPresetValue(getSubState(preset, "gain4"));
-}
-
 void setParameterValue(ParameterIndex index, ParameterValue v, MillisecondTime time) {
     this->updateTime(time, (ENGINE*)nullptr);
 
@@ -1098,18 +1081,18 @@ void updateTime(MillisecondTime time, EXTERNALENGINE* engine, bool inProcess = f
 
 void assign_defaults()
 {
+    param_01_value = 0;
     dspexpr_01_in1 = 0;
     dspexpr_01_in2 = 0.5;
-    param_01_value = 0;
+    param_02_value = 0;
     dspexpr_02_in1 = 0;
     dspexpr_02_in2 = 0.5;
-    param_02_value = 0;
+    param_03_value = 0;
     dspexpr_03_in1 = 0;
     dspexpr_03_in2 = 0.5;
-    param_03_value = 0;
+    param_04_value = 0;
     dspexpr_04_in1 = 0;
     dspexpr_04_in2 = 0.5;
-    param_04_value = 0;
     ctlin_01_input = 0;
     ctlin_01_controller = 0;
     ctlin_01_channel = -1;
@@ -1170,18 +1153,18 @@ void assign_defaults()
 
 // member variables
 
+    number param_01_value;
     number dspexpr_01_in1;
     number dspexpr_01_in2;
-    number param_01_value;
+    number param_02_value;
     number dspexpr_02_in1;
     number dspexpr_02_in2;
-    number param_02_value;
+    number param_03_value;
     number dspexpr_03_in1;
     number dspexpr_03_in2;
-    number param_03_value;
+    number param_04_value;
     number dspexpr_04_in1;
     number dspexpr_04_in2;
-    number param_04_value;
     number ctlin_01_input;
     number ctlin_01_controller;
     number ctlin_01_channel;

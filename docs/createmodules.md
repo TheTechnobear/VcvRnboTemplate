@@ -20,8 +20,9 @@ Max RNBO Patch → Export C++ → Build VCV → Test → Build MetaModule → De
 ### 1. Design in Max
 
 Create your audio patch in Max/MSP using RNBO objects. Test thoroughly in Max before exporting.
+You can learn more about RNBO patching [here](https://rnbo.cycling74.com)
 
-**💡 Tip**: Save your Max patch in `VcvModules/max/YourPatchName.maxpat` for organization.
+**💡 Tip**: Save your Max (.maxpat) **and** RNBO patch (.rnbopat) in `VcvModules/max/`for organization.
 
 ### 2. Create Module Structure
 

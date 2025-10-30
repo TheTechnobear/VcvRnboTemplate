@@ -155,10 +155,10 @@
   "presetid": "rnbo",
   "meta": {
     "architecture": "x64",
-    "filename": "tbtest.maxpat",
-    "rnboobjname": "TBTestRnbo",
-    "maxversion": "9.0.9",
+    "filename": "Demo.maxpat",
+    "rnboobjname": "DemoRnbo",
+    "maxversion": "9.1.0",
     "rnboversion": "1.4.2",
-    "name": "tbtest"
+    "name": "Demo"
   }
 }
