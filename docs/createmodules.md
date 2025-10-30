@@ -24,7 +24,16 @@ You can learn more about RNBO patching [here](https://rnbo.cycling74.com)
 
 **💡 Tip**: Save your Max (.maxpat) **and** RNBO patch (.rnbopat) in `VcvModules/max/`for organization.
 
-### 2. Create Module Structure
+### 2. Create Plugin
+If you have not already created your plugin.
+note: setup will have already asked you to do this.
+
+```bash
+python3 scripts/createPlugin.py
+```
+
+
+### 3. Create Module Structure
 
 ```bash
 python3 scripts/createModule.py
@@ -37,7 +46,7 @@ Follow prompts for:
 
 This creates the module template and `[ModuleName]-rnbo/` directory.
 
-### 3. Export from Max
+### 4. Export from Max
 
 In Max, export your RNBO patch with these **exact settings**:
 
@@ -52,7 +61,7 @@ In Max, export your RNBO patch with these **exact settings**:
 
 ⚠️ **Critical**: Codegen class name must be `[ModuleName]Rnbo`
 
-### 4. Build and Test
+### 5. Build and Test
 
 **Build for VCV Rack:**
 ```bash
