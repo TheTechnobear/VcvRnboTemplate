@@ -4,6 +4,18 @@ Detailed information for extending your RNBO module development.
 
 ## Development Tools
 
+
+## External Resources
+
+- **[MetaModule SDK Documentation](https://github.com/4ms/metamodule-plugin-sdk)**
+- **[VCV Rack Plugin Tutorial](https://vcvrack.com/manual/PluginDevelopmentTutorial)**
+- **[RNBO Documentation](https://rnbo.cycling74.com/)**
+
+## Getting Help
+
+- **Community**: [4ms MetaModule Forum](https://forum.4ms.info)
+- **Tutorials**: [@thetechnobear YouTube channel](https://youtube.com/@thetechnobear)
+
 **Recommended Code Editor**: [VSCode](https://code.visualstudio.com) (free)
 - Excellent C++ support with extensions
 - Integrated terminal and Git support
@@ -107,14 +119,3 @@ The RNBO runtime is in `VcvModules/inc/rnbo-export/common/`. To update:
 1. Export an RNBO patch with "Copy C++ library code" enabled
 2. Replace the `common/` directory with the exported version
 3. Rebuild all modules
-
-## External Resources
-
-- **[MetaModule SDK Documentation](https://github.com/4ms/metamodule-plugin-sdk)**
-- **[VCV Rack Plugin Tutorial](https://vcvrack.com/manual/PluginDevelopmentTutorial)**
-- **[RNBO Documentation](https://rnbo.cycling74.com/)**
-
-## Getting Help
-
-- **Community**: [4ms MetaModule Forum](https://forum.4ms.info)
-- **Tutorials**: [@thetechnobear YouTube channel](https://youtube.com/@thetechnobear)

@@ -53,8 +53,9 @@ def create_demo_module():
     
     print("🔧 Creating Demo module...")
     
-    # Module input for Demo module
+    # Module input for Demo module - includes panel selection (1 = Blank10U.svg)
     demo_input = """Demo
+1
 Demo
 Demo RNBO module for testing
 audio, demo

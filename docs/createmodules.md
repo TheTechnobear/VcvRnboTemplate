@@ -59,15 +59,15 @@ cd VcvModules && make
 ```
 
 **Test in VCV Rack (Recommended):**
+copy and install plugin into VCV rack
 ```bash
-make dist
-# Copy plugin to VCV Rack plugins folder and test
+make install
 ```
 
 **Build for MetaModule:**
 ```bash
 cd .. && cmake --fresh -B build && cmake --build build
-# Copy .mmplugin to MetaModule SD card
+# Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
 ```
 
 ## Development Tips

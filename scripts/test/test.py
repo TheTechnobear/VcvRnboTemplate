@@ -119,8 +119,9 @@ def create_test_module(module_name, description, tags):
         print(f"❌ {create_module_script} not found!")
         return False
     
-    # Module details
+    # Module details - includes panel selection (1 = Blank10U.svg)
     module_input = f"""{module_name}
+1
 
 {description}
 {tags}

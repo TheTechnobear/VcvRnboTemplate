@@ -59,10 +59,55 @@ def get_module_name():
     
     return module_name
 
-def copy_and_process_template(module_name):
-    """Copy template.cpp to MOD.cpp and replace __MOD__ placeholder"""
+def select_panel():
+    """Present user with list of available panels and let them choose"""
     project_root = Path.cwd()
-    template_path = project_root / "templates" / "vcv" / "src" / "template.cpp"
+    res_dir = project_root / "VcvModules" / "res"
+    
+    if not res_dir.exists():
+        print("❌ VcvModules/res directory not found!")
+        sys.exit(1)
+    
+    # Find all .svg files in res directory
+    svg_files = list(res_dir.glob("*.svg"))
+    
+    if not svg_files:
+        print("❌ No SVG panel files found in VcvModules/res/")
+        print("Please add some panel files (e.g., Blank10U.svg) to the res directory")
+        sys.exit(1)
+    
+    # Sort by name for consistent ordering
+    svg_files.sort(key=lambda x: x.name.lower())
+    
+    print("\nAvailable panels:")
+    for i, svg_file in enumerate(svg_files, 1):
+        print(f"  {i}. {svg_file.name}")
+    
+    # Get user selection
+    while True:
+        try:
+            choice = input(f"\nSelect panel (1-{len(svg_files)}): ").strip()
+            if not choice:
+                # Default to first panel if user just presses enter
+                selected_panel = svg_files[0].name
+                break
+            
+            choice_num = int(choice)
+            if 1 <= choice_num <= len(svg_files):
+                selected_panel = svg_files[choice_num - 1].name
+                break
+            else:
+                print(f"Please enter a number between 1 and {len(svg_files)}")
+        except ValueError:
+            print("Please enter a valid number")
+    
+    print(f"Selected panel: {selected_panel}")
+    return selected_panel
+
+def copy_and_process_template(module_name, panel_filename):
+    """Copy module.cpp to MOD.cpp and replace __MOD__ and __PANEL__ placeholders"""
+    project_root = Path.cwd()
+    template_path = project_root / "templates" / "vcv" / "src" / "module.cpp"
     target_path = project_root / "VcvModules" / "src" / f"{module_name}.cpp"
     
     if not template_path.exists():
@@ -82,8 +127,9 @@ def copy_and_process_template(module_name):
     with open(template_path, 'r') as f:
         content = f.read()
     
-    # Replace __MOD__ placeholder with module name
+    # Replace __MOD__ placeholder with module name and __PANEL__ with selected panel
     processed_content = content.replace('__MOD__', module_name)
+    processed_content = processed_content.replace('__PANEL__', panel_filename)
     
     # Ensure target directory exists
     os.makedirs(target_path.parent, exist_ok=True)
@@ -428,13 +474,16 @@ def main():
         # Get module name from user
         module_name = get_module_name()
         
+        # Select panel
+        panel_filename = select_panel()
+        
         # Get module details for plugin.json
         module_details = get_module_details(module_name)
         
         print(f"\nCreating module '{module_name}'...")
         
         # Copy and process template
-        module_file = copy_and_process_template(module_name)
+        module_file = copy_and_process_template(module_name, panel_filename)
         
         # Create RNBO directory
         rnbo_dir = create_rnbo_directory(module_name)

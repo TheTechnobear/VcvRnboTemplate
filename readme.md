@@ -35,7 +35,7 @@ Before investing in Max/RNBO, test your setup with the included demo:
 python3 scripts/check.py           # Verify environment
 python3 scripts/createPlugin.py    # Create test plugin  
 python3 scripts/addDemo.py         # Add demo module
-cd VcvModules && make              # Build for VCV Rack
+cd VcvModules && make install      # Build and install in VCV Rack
 ```
 
 This builds a working module and confirms your setup works!
@@ -52,7 +52,7 @@ python3 scripts/createModule.py
 #    (in Max: Export → C++ → [ModuleName].cpp.h)
 
 # 3. Build
-cd VcvModules && make              # For VCV Rack
+cd VcvModules && make install      # build and add to vcv rack
 cd .. && cmake --fresh -B build && cmake --build build  # For MetaModule
 ```
 

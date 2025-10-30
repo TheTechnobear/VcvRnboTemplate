@@ -9,6 +9,26 @@
 #define RNBO_FIXEDLISTSIZE 64
 #define RNBO_NO_PATCHERFACTORY
 
+
+// a couple of user options
+
+// use a generic title - disable by commenting out (with //)
+// comment this out, and then have a custom panel with title on background
+#define GENERIC_TITLE_LABEL
+
+
+// use the generic UI - disable by commenting out (with //)
+// to use your own UI you will need to : 
+// - comment GENERIC_UI out 
+// - create a panel file (res/__MOD__.svg), which has params and IO in same order as rnbo patch
+// - run $RACK_DIR/helper.py createmodule __MOD__ res/__MOD__.svg tmp.cpp
+// - from tmp.cpp copy enum ParamId, InputId, OutputId and place in this file after enum LightId
+// - from tmp.cpp copy ___MOD__Widget and replace where indicated below (search CUSTOM WIDGET)
+// to come: more information in documentation and possible yt video on my channel.
+#define GENERIC_UI
+
+
+
 namespace RNBO {
 namespace Platform {
 static void printMessage(const char* message) {
@@ -33,7 +53,7 @@ static void printErrorMessage(const char* message) {
 #include "__MOD__-rnbo/__MOD__.cpp.h"
 #pragma GCC diagnostic pop
 
-
+#ifdef GENERIC_UI
 namespace __MOD___UI {
 const float titleSpaceY = 20.f;
 const float inputSpaceY = 20.f;
@@ -43,9 +63,11 @@ const float borderX = 17.f;
 const float spaceY = 15.f;
 const float spaceX = 15.f;
 };  // namespace __MOD___UI
+#endif
 
 struct __MOD__ : Module {
     enum LightId { LIGHTS_LEN };
+    //if you use a CUSTOM UI, this is where you need to add enum paramId, enum InputId, enum OutputId 
 
     __MOD__() {
         rnboInit();
@@ -132,8 +154,8 @@ void __MOD__::rnboDeInit() {
 }
 
 
+#ifdef GENERIC_UI
 using namespace __MOD___UI;
-
 struct __MOD__Widget : ModuleWidget {
     __MOD__Widget(__MOD__* module) {
         /// a generic layout for modules
@@ -141,7 +163,7 @@ struct __MOD__Widget : ModuleWidget {
         // you would need to ensure the parameter, input and output indexes matched RNBO
 
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/__MOD__.svg")));
+        setPanel(createPanel(asset::plugin(pluginInstance, "res/__PANEL__")));
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -150,8 +172,9 @@ struct __MOD__Widget : ModuleWidget {
 
         const float maxWidthInPx = box.size.x;
         const float maxWidth = (maxWidthInPx / mm2px(1.0)) - borderX;
+#ifdef GENERIC_TITLE_LABEL
         addLabel(mm2px(Vec(borderX / 2.0f, 0)), "__MOD__", 18.f, maxWidth, nvgRGB(0xff, 0x00, 0x00));
-
+#endif
         RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>>* pPatch = nullptr;
         if (module) {
             pPatch = module->getRnboPatch();
@@ -221,6 +244,11 @@ struct __MOD__Widget : ModuleWidget {
         addChild(label);
     }
 };
+#else 
+// this is where you need to place the CUSTOM WIDGET
+// see above, about generating and creating struct __MOD__Widget
+#endif //  GENERIC_UI
+
 
 Model* model__MOD__ = createModel<__MOD__, __MOD__Widget>("__MOD__");
 
