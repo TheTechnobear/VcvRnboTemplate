@@ -9,32 +9,6 @@ This guide covers setting up your development environment and testing it with a 
 - **Free**: Development tools (covered in this guide)
 - **Paid**: Max 8/9 with RNBO 1.4.2+ (needed only for creating modules, not using them)
 
-## Terminal/Command Line Setup
-
-This project uses command line tools. You'll need to open a terminal and run text commands.
-
-### Windows Users ⚠️
-**Critical**: Install [MSYS2](https://www.msys2.org/) and **always use the MinGW 64-bit shell** from the Start menu for all commands in this guide. 
-
-- ❌ **Don't use**: Command Prompt, PowerShell, or Git Bash
-- ✅ **Do use**: MSYS2 MinGW 64-bit shell
-
-The VCV Rack setup guide will walk you through MSYS2 installation.
-
-### macOS Users  
-Use the built-in **Terminal** app (Applications → Utilities → Terminal).
-
-### Linux Users
-Use your distribution's terminal (usually Ctrl+Alt+T).
-
-### Basic Terminal Usage
-- Commands are the text shown in code blocks (e.g., `python3 scripts/check.py`)
-- Type or copy-paste commands and press Enter
-- Use `cd [directory]` to change directories
-- Use `ls` (Mac/Linux) or `dir` (Windows) to list files
-
-**💡 Tip**: You can usually copy-paste commands directly from this guide into your terminal.
-
 ## Installation Steps
 
 ### 1. Install Build Requirements
@@ -125,5 +99,34 @@ python3 scripts/removeModule.py Demo
 - **[Creating Modules](createmodules.md)** - Build your first RNBO module
 - **[More Information](more.md)** - Advanced topics and customization
 
+
+---------
+
+
+## Tips - Terminal/Command Line Setup
+
+This project uses command line tools. You'll need to open a terminal and run text commands.
+
+### Windows Users ⚠️
+**Critical**: Install [MSYS2](https://www.msys2.org/) and **always use the MinGW 64-bit shell** from the Start menu for all commands in this guide. 
+
+- ❌ **Don't use**: Command Prompt, PowerShell, or Git Bash
+- ✅ **Do use**: MSYS2 MinGW 64-bit shell
+
+The VCV Rack setup guide will walk you through MSYS2 installation.
+
+### macOS Users  
+Use the built-in **Terminal** app (Applications → Utilities → Terminal).
+
+### Linux Users
+Use your distribution's terminal (usually Ctrl+Alt+T).
+
+### Basic Terminal Usage
+- Commands are the text shown in code blocks (e.g., `python3 scripts/check.py`)
+- Type or copy-paste commands and press Enter
+- Use `cd [directory]` to change directories
+- Use `ls` (Mac/Linux) or `dir` (Windows) to list files
+
+**💡 Tip**: You can usually copy-paste commands directly from this guide into your terminal.
 
 
