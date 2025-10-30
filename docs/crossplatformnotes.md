@@ -18,7 +18,7 @@ This VCV Rack RNBO Template system has been designed and tested for cross-platfo
 ### ARM Toolchain Detection
 - `scripts/check.py` includes Windows-specific guidance for ARM toolchain setup
 - Detects Windows platform (`os.name == 'nt'`) and provides appropriate instructions
-- Recommends MinGW-w64 or MSYS2 for ARM cross-compilation on Windows
+- Use MSYS2 for ARM cross-compilation on Windows
 
 ### File Path Handling
 - All scripts use `pathlib.Path` for cross-platform path handling
@@ -33,10 +33,9 @@ This VCV Rack RNBO Template system has been designed and tested for cross-platfo
 - Uses system Python 3.x installation
 
 ### Windows
-- ARM toolchain requires manual installation (MinGW-w64/MSYS2)
+- ARM toolchain requires manual installation (use MSYS2)
 - May need to adjust PATH environment variable for tools
-- PowerShell or Command Prompt both supported
-- Git Bash recommended for Unix-like environment
+- Use MSYS2
 
 ## Build System Compatibility
 
@@ -50,27 +49,16 @@ This VCV Rack RNBO Template system has been designed and tested for cross-platfo
 - Requires ARM cross-compilation toolchain
 - Target: ARM Cortex-A7 (32-bit)
 
-## Testing Recommendations
-
-### Before Release
-1. Test all Python scripts on Windows with Python 3.x
-2. Verify line endings in generated files are consistent
-3. Test ARM toolchain detection on Windows
-4. Validate that generated C++ code compiles on both platforms
 
 ### User Instructions
 - Always use `python3` command in documentation
 - Provide Windows-specific ARM toolchain setup instructions
 - Include PATH environment variable setup for Windows users
-- Test with both PowerShell and Command Prompt on Windows
 
 ## Known Issues
 - Unicode characters in output may not display correctly in some Windows terminals
 - ARM toolchain installation is more complex on Windows
 - File permissions may differ between platforms (affects executable scripts)
 
-## Future Improvements
-- Consider providing pre-compiled ARM toolchain for Windows
-- Add Windows batch file alternatives to Python scripts
-- Implement automatic line ending detection and conversion
-- Add Windows-specific installation documentation
+## Future
+- Get feedback from Windows users to help improve documentation
