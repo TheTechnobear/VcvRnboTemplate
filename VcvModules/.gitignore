@@ -8,10 +8,11 @@ err.txt
 **/*.so
 **/*.dylib
 **/*.zip
-
+**/*.vcvplugin
 **/dep
 **/build
 **/plugin.dylib
 **/tmp
+**/dist/*
 
 
