@@ -35,10 +35,10 @@ def prompt_user_details():
     print("Creating new plugin...")
     print("Please enter the following details:")
     
-    slug = input("Plugin slug (e.g., 'MyCompany', used for technical identification): ").strip()
+    slug = input("Plugin slug (e.g., 'MyCompany', used as technical ID, no spaces): ").strip()
     while not slug:
         print("Plugin slug is required!")
-        slug = input("Plugin slug (e.g., 'MyCompany', used for technical identification): ").strip()
+        slug = input("Plugin slug (e.g., 'MyCompany', used as technical ID, no spaces): ").strip()
     
     name = input("Plugin display name (e.g., 'My Company Audio', shown to users): ").strip()
     while not name:

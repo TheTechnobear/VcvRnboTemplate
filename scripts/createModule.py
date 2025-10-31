@@ -40,22 +40,41 @@ def check_plugin_exists():
     print("✓ Found existing plugin configuration files")
     return vcv_plugin_json, mm_plugin_json
 
-def get_module_name():
-    """Prompt user for module name"""
+def get_module_slug():
+    """Prompt user for module slug with validation"""
     print("\nAdding new module to plugin...")
+    print("First, we need a module slug - this is used for technical identifiers (filenames, C++ code, etc.)")
+    print("The slug must contain only letters, numbers, and underscores (no spaces).")
     
-    module_name = input("Enter module name (e.g., 'Reverb', 'Filter'): ").strip()
+    while True:
+        module_slug = input("Enter module slug (e.g., 'Reverb', 'MultiFilter', 'MyDelay'): ").strip()
+        
+        if not module_slug:
+            print("❌ Module slug is required!")
+            continue
+        
+        # Validate slug - only letters, numbers, and underscores
+        if not module_slug.replace('_', '').isalnum():
+            print("❌ Module slug can only contain letters, numbers, and underscores (no spaces or special characters)")
+            print("Examples: 'Reverb', 'MultiFilter', 'My_Delay'")
+            continue
+        
+        # Additional check to ensure it starts with a letter (good C++ practice)
+        if not module_slug[0].isalpha():
+            print("❌ Module slug should start with a letter")
+            continue
+            
+        return module_slug
+
+def get_module_name():
+    """Prompt user for module name (user-facing display name)"""
+    print("\nNow enter the module name - this is the user-facing display name.")
+    print("The name can contain spaces and special characters (e.g., 'My Great Filter', 'Reverb & Delay').")
+    
+    module_name = input("Enter module name: ").strip()
     while not module_name:
-        print("Module name is required!")
-        module_name = input("Enter module name (e.g., 'Reverb', 'Filter'): ").strip()
-    
-    # Basic validation - check for valid identifier characters
-    if not module_name.replace('_', '').isalnum():
-        print("Warning: Module name should only contain letters, numbers, and underscores")
-        confirm = input(f"Continue with module name '{module_name}'? (y/N): ").strip().lower()
-        if confirm != 'y':
-            print("Module creation cancelled.")
-            sys.exit(0)
+        print("❌ Module name is required!")
+        module_name = input("Enter module name: ").strip()
     
     return module_name
 
@@ -104,11 +123,11 @@ def select_panel():
     print(f"Selected panel: {selected_panel}")
     return selected_panel
 
-def copy_and_process_template(module_name, panel_filename):
-    """Copy module.cpp to MOD.cpp and replace __MOD__ and __PANEL__ placeholders"""
+def copy_and_process_template(module_name, module_slug, panel_filename):
+    """Copy module.cpp to MOD.cpp and replace __MOD__, __MODNAME__, and __PANEL__ placeholders"""
     project_root = Path.cwd()
     template_path = project_root / "templates" / "vcv" / "src" / "module.cpp"
-    target_path = project_root / "VcvModules" / "src" / f"{module_name}.cpp"
+    target_path = project_root / "VcvModules" / "src" / f"{module_slug}.cpp"
     
     if not template_path.exists():
         print(f"❌ Template file not found at {template_path}")
@@ -127,8 +146,12 @@ def copy_and_process_template(module_name, panel_filename):
     with open(template_path, 'r') as f:
         content = f.read()
     
-    # Replace __MOD__ placeholder with module name and __PANEL__ with selected panel
-    processed_content = content.replace('__MOD__', module_name)
+    # Replace placeholders (do longer placeholders first to avoid conflicts):
+    # __MODNAME__ -> module name (for user-facing display)
+    # __MOD__ -> module slug (for technical identifiers, filenames)  
+    # __PANEL__ -> selected panel filename
+    processed_content = content.replace('__MODNAME__', module_name)
+    processed_content = processed_content.replace('__MOD__', module_slug)
     processed_content = processed_content.replace('__PANEL__', panel_filename)
     
     # Ensure target directory exists
@@ -141,10 +164,10 @@ def copy_and_process_template(module_name, panel_filename):
     print(f"✓ Created module source file: {target_path}")
     return target_path
 
-def create_rnbo_directory(module_name):
+def create_rnbo_directory(module_slug):
     """Create MOD-rnbo subdirectory"""
     project_root = Path.cwd()
-    rnbo_dir = project_root / "VcvModules" / "src" / f"{module_name}-rnbo"
+    rnbo_dir = project_root / "VcvModules" / "src" / f"{module_slug}-rnbo"
     
     if rnbo_dir.exists():
         print(f"Warning: RNBO directory {rnbo_dir} already exists")
@@ -154,7 +177,7 @@ def create_rnbo_directory(module_name):
     
     return rnbo_dir
 
-def update_plugin_hpp(module_name):
+def update_plugin_hpp(module_slug):
     """Add extern Model* modelMOD; declaration to plugin.hpp"""
     project_root = Path.cwd()
     plugin_hpp_path = project_root / "VcvModules" / "src" / "plugin.hpp"
@@ -168,9 +191,9 @@ def update_plugin_hpp(module_name):
         content = f.read()
     
     # Check if model declaration already exists
-    model_declaration = f"extern Model* model{module_name};"
+    model_declaration = f"extern Model* model{module_slug};"
     if model_declaration in content:
-        print(f"✓ Model declaration for {module_name} already exists in plugin.hpp")
+        print(f"✓ Model declaration for {module_slug} already exists in plugin.hpp")
         return True
     
     # Find the best insertion point: after existing model declarations or at the end
@@ -199,7 +222,7 @@ def update_plugin_hpp(module_name):
     print(f"✓ Added model declaration to plugin.hpp: {model_declaration}")
     return True
 
-def update_plugin_cpp(module_name):
+def update_plugin_cpp(module_slug):
     """Add p->addModel(modelMOD); to plugin.cpp"""
     project_root = Path.cwd()
     plugin_cpp_path = project_root / "VcvModules" / "src" / "plugin.cpp"
@@ -213,9 +236,9 @@ def update_plugin_cpp(module_name):
         content = f.read()
     
     # Check if model is already added
-    model_add = f"p->addModel(model{module_name});"
+    model_add = f"p->addModel(model{module_slug});"
     if model_add in content:
-        print(f"✓ Model {module_name} already added in plugin.cpp")
+        print(f"✓ Model {module_slug} already added in plugin.cpp")
         return True
     
     # Find the init function and add the model before the closing brace
@@ -245,7 +268,7 @@ def update_plugin_cpp(module_name):
         return False
     
     # Insert the new addModel call with proper indentation
-    lines.insert(insert_position, f"\tp->addModel(model{module_name});")
+    lines.insert(insert_position, f"\tp->addModel(model{module_slug});")
     
     # Write back to file
     with open(plugin_cpp_path, 'w', newline='\n') as f:
@@ -254,7 +277,7 @@ def update_plugin_cpp(module_name):
     print(f"✓ Added model to plugin.cpp: {model_add}")
     return True
 
-def update_vcv_makefile(module_name):
+def update_vcv_makefile(module_slug):
     """Add module source file to VCV Makefile"""
     project_root = Path.cwd()
     makefile_path = project_root / "VcvModules" / "Makefile"
@@ -268,9 +291,9 @@ def update_vcv_makefile(module_name):
         content = f.read()
     
     # Check if module is already in Makefile
-    module_source = f"src/{module_name}.cpp"
+    module_source = f"src/{module_slug}.cpp"
     if module_source in content:
-        print(f"✓ Module {module_name} already in VCV Makefile")
+        print(f"✓ Module {module_slug} already in VCV Makefile")
         return True
     
     # Replace the __MODULE_SOURCES__ placeholder or add to existing sources
@@ -295,7 +318,7 @@ def update_vcv_makefile(module_name):
     print(f"✓ Added {module_source} to VCV Makefile")
     return True
 
-def update_metamodule_cmake(module_name):
+def update_metamodule_cmake(module_slug):
     """Add module source file to MetaModule CMakeLists.txt"""
     project_root = Path.cwd()
     cmake_path = project_root / "CMakeLists.txt"
@@ -309,9 +332,9 @@ def update_metamodule_cmake(module_name):
         content = f.read()
     
     # Check if module is already in CMakeLists.txt
-    module_source = f"${{SOURCE_DIR}}/src/{module_name}.cpp"
+    module_source = f"${{SOURCE_DIR}}/src/{module_slug}.cpp"
     if module_source in content:
-        print(f"✓ Module {module_name} already in MetaModule CMakeLists.txt")
+        print(f"✓ Module {module_slug} already in MetaModule CMakeLists.txt")
         return True
     
     # Replace the __MODULE_SOURCES__ placeholder or add to existing sources
@@ -336,16 +359,11 @@ def update_metamodule_cmake(module_name):
     print(f"✓ Added {module_source} to MetaModule CMakeLists.txt")
     return True
 
-def get_module_details(module_name):
-    """Prompt user for module details for plugin.json"""
+def get_module_details(module_name, module_slug):
+    """Prompt user for additional module details for plugin.json"""
     print(f"\nModule details for plugin.json:")
-    
-    # Use module name directly as default slug (no prefix)
-    default_slug = module_name
-    
-    slug = input(f"Module slug (default: {default_slug}): ").strip()
-    if not slug:
-        slug = default_slug
+    print(f"  • Slug: {module_slug} (technical identifier)")
+    print(f"  • Name: {module_name} (display name)")
     
     description = input(f"Module description (e.g., 'RNBO reverb module'): ").strip()
     if not description:
@@ -361,13 +379,13 @@ def get_module_details(module_name):
         tags = ["audio", "effect"]  # Default tags
     
     return {
-        "slug": slug,
+        "slug": module_slug,
         "name": module_name,
         "description": description,
         "tags": tags
     }
 
-def update_plugin_json(module_name, module_details):
+def update_plugin_json(module_slug, module_details):
     """Add module definition to plugin.json"""
     project_root = Path.cwd()
     plugin_json_path = project_root / "VcvModules" / "plugin.json"
@@ -411,7 +429,7 @@ def update_plugin_json(module_name, module_details):
         print(f"Error updating plugin.json: {e}")
         return False
 
-def update_plugin_mm_json(module_name, module_details):
+def update_plugin_mm_json(module_slug, module_details):
     """Add module definition to plugin-mm.json"""
     project_root = Path.cwd()
     plugin_mm_json_path = project_root / "plugin-mm.json"
@@ -471,43 +489,46 @@ def main():
         # Check that createPlugin.py has been run
         vcv_plugin_json, mm_plugin_json = check_plugin_exists()
         
-        # Get module name from user
+        # Get module slug first (with validation)
+        module_slug = get_module_slug()
+        
+        # Get module name (user-facing, no validation needed)
         module_name = get_module_name()
         
         # Select panel
         panel_filename = select_panel()
         
-        # Get module details for plugin.json
-        module_details = get_module_details(module_name)
+        # Get additional module details for plugin.json
+        module_details = get_module_details(module_name, module_slug)
         
-        print(f"\nCreating module '{module_name}'...")
+        print(f"\nCreating module '{module_name}' with slug '{module_slug}'...")
         
         # Copy and process template
-        module_file = copy_and_process_template(module_name, panel_filename)
+        module_file = copy_and_process_template(module_name, module_slug, panel_filename)
         
         # Create RNBO directory
-        rnbo_dir = create_rnbo_directory(module_name)
+        rnbo_dir = create_rnbo_directory(module_slug)
         
         # Update plugin.hpp to add model declaration
-        update_plugin_hpp(module_name)
+        update_plugin_hpp(module_slug)
         
         # Update plugin.cpp to add model to plugin
-        update_plugin_cpp(module_name)
+        update_plugin_cpp(module_slug)
         
         # Update build systems to include module source
-        update_vcv_makefile(module_name)
-        update_metamodule_cmake(module_name)
+        update_vcv_makefile(module_slug)
+        update_metamodule_cmake(module_slug)
         
         # Add module to plugin.json
-        update_plugin_json(module_name, module_details)
+        update_plugin_json(module_slug, module_details)
         
         # Add module to plugin-mm.json
-        update_plugin_mm_json(module_name, module_details)
+        update_plugin_mm_json(module_slug, module_details)
         
         print(f"\n✓ Module '{module_name}' created successfully!")
         print("\nNext steps:")
         print(f"1. Export your RNBO patch to: {rnbo_dir}/")
-        print(f"   - The export should create {module_name}.cpp.h")
+        print(f"   - The export should create {module_slug}.cpp.h")
         print("2. Build and test your module")
         
     except KeyboardInterrupt:

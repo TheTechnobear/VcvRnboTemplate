@@ -54,9 +54,10 @@ def create_demo_module():
     print("🔧 Creating Demo module...")
     
     # Module input for Demo module - includes panel selection (1 = Blank10U.svg)
+    # Input format: slug, name, panel_selection, description, tags
     demo_input = """Demo
-1
 Demo
+1
 Demo RNBO module for testing
 audio, demo
 """
@@ -72,9 +73,13 @@ audio, demo
         
         if result.returncode == 0:
             print("✅ Demo module created successfully")
+            print("Output:")
+            print(result.stdout)
             return True
         else:
-            print(f"❌ Error creating Demo module: {result.stderr}")
+            print(f"❌ Error creating Demo module:")
+            print("STDOUT:", result.stdout)
+            print("STDERR:", result.stderr)
             return False
             
     except subprocess.TimeoutExpired:

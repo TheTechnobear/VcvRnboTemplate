@@ -173,7 +173,7 @@ struct __MOD__Widget : ModuleWidget {
         const float maxWidthInPx = box.size.x;
         const float maxWidth = (maxWidthInPx / mm2px(1.0)) - borderX;
 #ifdef GENERIC_TITLE_LABEL
-        addLabel(mm2px(Vec(borderX / 2.0f, 0)), "__MOD__", 18.f, maxWidth, nvgRGB(0xff, 0x00, 0x00));
+        addLabel(mm2px(Vec(borderX / 2.0f, 0)), "__MODNAME__", 18.f, maxWidth, nvgRGB(0xff, 0x00, 0x00));
 #endif
         RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>>* pPatch = nullptr;
         if (module) {
