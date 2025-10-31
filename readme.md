@@ -28,6 +28,8 @@ Learn more about RNBO visual programming at https://rnbo.cycling74.com
 
 **👉 Start Here**: **[Setup Environment](docs/setup.md)** - Install build tools and SDKs
 
+[My YouTube Video showing the how to setup and create your first module](https://youtu.be/paO0zy8WzZU)
+
 **Note**: Commands below use the terminal/command line. Windows users should use MSYS2 MinGW 64-bit shell (see setup guide).
 
 ### Test Demo (No Max/RNBO Required)
