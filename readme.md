@@ -55,8 +55,8 @@ Creating your first modules is simple, though you wil need Max and RNBO.
 # 1. Create module template
 python3 scripts/createModule.py
 
-# 2. Export your RNBO patch to: VcvModules/src/[ModuleName]-rnbo/
-#    (in Max: Export → C++ → [ModuleName].cpp.h)
+# 2. Export your RNBO patch to: VcvModules/src/[ModuleSlug]-rnbo/
+#    (in Max: Export → C++ → [ModuleSlug].cpp.h)
 
 # 3. Build
 cd VcvModules && make install      # build and add to vcv rack

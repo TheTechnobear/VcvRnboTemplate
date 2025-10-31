@@ -40,11 +40,13 @@ python3 scripts/createModule.py
 ```
 
 Follow prompts for:
-- **Module name** (e.g., "Reverb", "Filter")  
+- **Module Slug** (e.g., "MyReverb")  
+- **Module Name** (e.g., "My Reverb")
+- **Select Panel** (e.g. 1 for Blank10U.svg) 
 - **Description** (e.g., "RNBO reverb module")
 - **Tags** (audio, effect, reverb, etc.)
 
-This creates the module template and `[ModuleName]-rnbo/` directory.
+This creates the module source code (in `VcvModules/src`) and `VcvModules/src/[ModuleSlug]-rnbo/` directory.
 
 ### 4. Export from Max
 
@@ -52,14 +54,14 @@ In Max, export your RNBO patch with these **exact settings**:
 
 **For module named "Reverb":**
 - **Export Type**: C++ 
-- **Output Directory**: `VcvModules/src/Reverb-rnbo/`
+- **Output Directory**: `VcvModules/src/Reverb-rnbo/` 
 - **Export Name**: `Reverb.cpp.h`
 - **Codegen Class Name**: `ReverbRnbo`
 - **Export Options**:
   - ✅ Minimal Export
   - ❌ Copy C++ library code
 
-⚠️ **Critical**: Codegen class name must be `[ModuleName]Rnbo`
+⚠️ **Critical**: Codegen class name must be `[ModuleSlug]Rnbo`
 
 ### 5. Build and Test
 
@@ -96,8 +98,8 @@ cd .. && cmake --fresh -B build && cmake --build build
 **Check Environment**: `python3 scripts/check.py`
 
 **Common Issues**:
-- Wrong export filename → Use exact naming: `ModuleName.cpp.h`
-- Missing codegen class → Set to `ModuleNameRnbo`
+- Wrong export filename → Use exact naming: `[ModuleSlug].cpp.h`
+- Missing codegen class → Set to `[ModuleSlug]Rnbo`
 - Build errors → Check toolchain installation
 
 **Get Help**: [4ms MetaModule Forum](https://forum.4ms.info)
@@ -113,7 +115,7 @@ Generated C++ code can be modified for advanced features. Your changes persist a
 ### Module Management
 ```bash
 # Remove a module
-python3 scripts/removeModule.py ModuleName
+python3 scripts/removeModule.py [ModuleSlug]
 
 # Reset entire project
 python3 scripts/test/reset.py
