@@ -21,9 +21,9 @@ def main():
             demo_module = next((m for m in modules if m['slug'] == 'Demo'), None)
             
             if demo_module:
-                print("✅ Demo module found in plugin.json:")
-                print(f"  • Slug: '{demo_module['slug']}' (used for technical IDs)")
-                print(f"  • Name: '{demo_module['name']}' (user-facing display)")
+                print("[PASS] Demo module found in plugin.json:")
+                print(f"  - Slug: '{demo_module['slug']}' (used for technical IDs)")
+                print(f"  - Name: '{demo_module['name']}' (user-facing display)")
     
     # Check Demo.cpp for correct placeholder substitution
     demo_cpp = project_root / "VcvModules" / "src" / "Demo.cpp"
@@ -31,13 +31,13 @@ def main():
         with open(demo_cpp) as f:
             content = f.read()
             
-        print(f"\n💻 Verifying placeholder substitution in Demo.cpp:")
+        print(f"\n[CODE] Verifying placeholder substitution in Demo.cpp:")
         
         # Check __MODNAME__ -> "Demo" (user-facing display in label)
         if '"Demo"' in content and 'addLabel' in content:
-            print("✅ __MODNAME__ correctly replaced with \"Demo\" for user display")
+            print("[PASS] __MODNAME__ correctly replaced with \"Demo\" for user display")
         else:
-            print("❌ __MODNAME__ substitution not found")
+            print("[ERROR] __MODNAME__ substitution not found")
             
         # Check __MOD__ -> Demo (technical identifiers)
         technical_usages = [
@@ -50,21 +50,21 @@ def main():
         
         for usage in technical_usages:
             if usage in content:
-                print(f"✅ __MOD__ correctly replaced: {usage}")
+                print(f"[PASS] __MOD__ correctly replaced: {usage}")
             else:
-                print(f"❌ __MOD__ substitution missing: {usage}")
+                print(f"[ERROR] __MOD__ substitution missing: {usage}")
         
         # Check __PANEL__ -> Blank10U.svg
         if 'res/Blank10U.svg' in content:
-            print("✅ __PANEL__ correctly replaced with 'Blank10U.svg'")
+            print("[PASS] __PANEL__ correctly replaced with 'Blank10U.svg'")
         else:
-            print("❌ __PANEL__ substitution not found")
+            print("[ERROR] __PANEL__ substitution not found")
     
-    print(f"\n🎯 Summary:")
-    print("  • __MODNAME__ is used for user-facing display text (can have spaces)")
-    print("  • __MOD__ is used for technical identifiers (no spaces, safe for C++)")
-    print("  • __PANEL__ is used for SVG panel filename")
-    print("  • Both name and slug are preserved in JSON for proper identification")
+    print(f"\n[TARGET] Summary:")
+    print("  - __MODNAME__ is used for user-facing display text (can have spaces)")
+    print("  - __MOD__ is used for technical identifiers (no spaces, safe for C++)")
+    print("  - __PANEL__ is used for SVG panel filename")
+    print("  - Both name and slug are preserved in JSON for proper identification")
 
 if __name__ == "__main__":
     main()

@@ -14,7 +14,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("❌ This script must be run from the project base directory.")
+        print("[ERROR] This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 helpers/removeAll.py")
@@ -49,12 +49,12 @@ def confirm_removal(modules, force=False):
         print(f"Force mode: Removing {len(modules)} modules without confirmation...")
         return True
     
-    print(f"\n⚠️  WARNING: This will permanently remove ALL {len(modules)} modules!")
+    print(f"\n[WARNING]  WARNING: This will permanently remove ALL {len(modules)} modules!")
     print("\nModules to be removed:")
     for module in modules:
-        print(f"  • {module}")
+        print(f"  - {module}")
     
-    print(f"\n❌ This action cannot be undone!")
+    print(f"\n[ERROR] This action cannot be undone!")
     print("Each module will be removed using scripts/removeModule.py")
     
     response = input(f"\nAre you sure you want to remove ALL {len(modules)} modules? (yes/no): ").strip().lower()
@@ -66,7 +66,7 @@ def remove_module(module_name, force=False):
     remove_script = project_root / "scripts" / "removeModule.py"
     
     if not remove_script.exists():
-        print(f"❌ {remove_script} not found!")
+        print(f"[ERROR] {remove_script} not found!")
         return False
     
     # Build command
@@ -136,16 +136,16 @@ def main():
             print(f"  Failed modules: {', '.join(failed_modules)}")
         
         if success_count == len(modules):
-            print(f"\n✅ All {len(modules)} modules removed successfully!")
+            print(f"\n[PASS] All {len(modules)} modules removed successfully!")
         elif success_count > 0:
-            print(f"\n⚠️  {success_count} modules removed, but {len(failed_modules)} failed.")
+            print(f"\n[WARNING]  {success_count} modules removed, but {len(failed_modules)} failed.")
         else:
-            print(f"\n❌ Failed to remove any modules.")
+            print(f"\n[ERROR] Failed to remove any modules.")
         
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"❌ {e}")
+        print(f"[ERROR] {e}")
 
 if __name__ == "__main__":
     main()

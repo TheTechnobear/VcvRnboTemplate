@@ -15,7 +15,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("❌ This script must be run from the project base directory.")
+        print("[ERROR] This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/test/test.py")
@@ -25,15 +25,15 @@ def ensure_run_from_base_directory():
 
 def confirm_destructive_operation(auto=False):
     """Confirm with user that this is a destructive test operation"""
-    print("🧪 VCV Rack RNBO Template Test Script")
+    print("[TEST] VCV Rack RNBO Template Test Script")
     print("=" * 50)
-    print("\n⚠️  WARNING: This is a destructive test operation!")
+    print("\n[WARNING]  WARNING: This is a destructive test operation!")
     print("\nThis script will:")
     print("1. Remove ALL existing modules (if any)")
     print("2. Create a fresh test plugin")
     print("3. Add 2 test modules")
     print("4. Leave the test files in place for verification")
-    print("\n❌ Any existing plugin and modules will be deleted!")
+    print("\n[ERROR] Any existing plugin and modules will be deleted!")
     
     if auto:
         print("\nRunning in automated mode - proceeding without confirmation...")
@@ -46,7 +46,7 @@ def run_command_with_input(cmd, input_text="", description=""):
     """Run a command with input and return success status"""
     try:
         if description:
-            print(f"\n🔧 {description}")
+            print(f"\n[TOOL] {description}")
         
         print(f"Running: {' '.join(cmd)}")
         
@@ -66,14 +66,14 @@ def run_command_with_input(cmd, input_text="", description=""):
             print("STDERR:", result.stderr)
         
         if result.returncode != 0:
-            print(f"❌ Command failed with return code {result.returncode}")
+            print(f"[ERROR] Command failed with return code {result.returncode}")
             return False
         
-        print("✅ Command completed successfully")
+        print("[PASS] Command completed successfully")
         return True
         
     except Exception as e:
-        print(f"❌ Error running command: {e}")
+        print(f"[ERROR] Error running command: {e}")
         return False
 
 def remove_all_modules():
@@ -94,7 +94,7 @@ def create_test_plugin():
     create_plugin_script = project_root / "scripts" / "createPlugin.py"
     
     if not create_plugin_script.exists():
-        print(f"❌ {create_plugin_script} not found!")
+        print(f"[ERROR] {create_plugin_script} not found!")
         return False
     
     # Plugin details for testing
@@ -116,7 +116,7 @@ def create_test_module(module_name, description, tags, expected_slug):
     create_module_script = project_root / "scripts" / "createModule.py"
     
     if not create_module_script.exists():
-        print(f"❌ {create_module_script} not found!")
+        print(f"[ERROR] {create_module_script} not found!")
         return False
     
     # Module details - includes panel selection (1 = Blank10U.svg)
@@ -150,12 +150,12 @@ def verify_test_results():
     for file_path in plugin_files:
         full_path = project_root / file_path
         if full_path.exists():
-            print(f"✅ {file_path}")
+            print(f"[PASS] {file_path}")
         else:
-            print(f"❌ {file_path} - MISSING!")
+            print(f"[ERROR] {file_path} - MISSING!")
     
     # Check module files exist (using SLUGS for filenames)
-    print(f"\n📁 Verifying module files use SLUGS (not names with spaces):")
+    print(f"\n[FOLDER] Verifying module files use SLUGS (not names with spaces):")
     module_files = [
         ("VcvModules/src/TestReverb.cpp", "Test Reverb"),
         ("VcvModules/src/TestReverb-rnbo", "Test Reverb"), 
@@ -166,12 +166,12 @@ def verify_test_results():
     for file_path, module_name in module_files:
         full_path = project_root / file_path
         if full_path.exists():
-            print(f"✅ {file_path} (for module '{module_name}')")
+            print(f"[PASS] {file_path} (for module '{module_name}')")
         else:
-            print(f"❌ {file_path} - MISSING! (for module '{module_name}')")
+            print(f"[ERROR] {file_path} - MISSING! (for module '{module_name}')")
     
     # Verify that files with spaces in names DON'T exist (demonstrating slug usage)
-    print(f"\n🚫 Verifying files with spaces DON'T exist (confirming slug usage):")
+    print(f"\n[BLOCK] Verifying files with spaces DON'T exist (confirming slug usage):")
     bad_files = [
         "VcvModules/src/Test Reverb.cpp",
         "VcvModules/src/Multi Filter.cpp"
@@ -180,18 +180,18 @@ def verify_test_results():
     for file_path in bad_files:
         full_path = project_root / file_path
         if full_path.exists():
-            print(f"❌ {file_path} - Should NOT exist! (proves spaces aren't used)")
+            print(f"[ERROR] {file_path} - Should NOT exist! (proves spaces aren't used)")
         else:
-            print(f"✅ {file_path} - Correctly does NOT exist")
+            print(f"[PASS] {file_path} - Correctly does NOT exist")
     
     # Show plugin.json modules (name vs slug distinction)
     try:
         plugin_json = project_root / "VcvModules" / "plugin.json"
         if plugin_json.exists():
-            print(f"\n📄 Plugin modules in {plugin_json} (showing name vs slug):")
+            print(f"\n[FILE] Plugin modules in {plugin_json} (showing name vs slug):")
             result = subprocess.run([
                 "python3", "-c", 
-                f"import json; data=json.load(open('{plugin_json}')); [print(f'  • Slug: {{m[\"slug\"]:12}} Name: \"{{m[\"name\"]}}\" ({{m[\"description\"]}})') for m in data.get('modules', [])]"
+                f"import json; data=json.load(open('{plugin_json}')); [print(f'  - Slug: {{m[\"slug\"]:12}} Name: \"{{m[\"name\"]}}\" ({{m[\"description\"]}})') for m in data.get('modules', [])]"
             ], capture_output=True, text=True)
             if result.stdout.strip():
                 print(result.stdout)
@@ -204,10 +204,10 @@ def verify_test_results():
     try:
         plugin_mm_json = project_root / "plugin-mm.json"
         if plugin_mm_json.exists():
-            print(f"\n📄 MetaModule modules in {plugin_mm_json} (showing name vs slug):")
+            print(f"\n[FILE] MetaModule modules in {plugin_mm_json} (showing name vs slug):")
             result = subprocess.run([
                 "python3", "-c",
-                f"import json; data=json.load(open('{plugin_mm_json}')); [print(f'  • Slug: {{m[\"slug\"]:12}} Name: \"{{m[\"name\"]}}\" ({{m[\"displayName\"]}})') for m in data.get('MetaModuleIncludedModules', [])]"
+                f"import json; data=json.load(open('{plugin_mm_json}')); [print(f'  - Slug: {{m[\"slug\"]:12}} Name: \"{{m[\"name\"]}}\" ({{m[\"displayName\"]}})') for m in data.get('MetaModuleIncludedModules', [])]"
             ], capture_output=True, text=True)
             if result.stdout.strip():
                 print(result.stdout)
@@ -217,7 +217,7 @@ def verify_test_results():
         print(f"Error reading plugin-mm.json: {e}")
     
     # Check C++ code generation uses slugs
-    print(f"\n💻 Verifying C++ code uses SLUGS for identifiers:")
+    print(f"\n[CODE] Verifying C++ code uses SLUGS for identifiers:")
     cpp_files_to_check = [
         ("VcvModules/src/plugin.hpp", ["modelTestReverb", "modelMultiFilter"]),
         ("VcvModules/src/plugin.cpp", ["modelTestReverb", "modelMultiFilter"]),
@@ -233,13 +233,13 @@ def verify_test_results():
                     
                 for slug in expected_slugs:
                     if slug in content:
-                        print(f"✅ {file_path} contains '{slug}'")
+                        print(f"[PASS] {file_path} contains '{slug}'")
                     else:
-                        print(f"❌ {file_path} missing '{slug}'")
+                        print(f"[ERROR] {file_path} missing '{slug}'")
             except Exception as e:
-                print(f"❌ Error reading {file_path}: {e}")
+                print(f"[ERROR] Error reading {file_path}: {e}")
         else:
-            print(f"❌ {file_path} not found")
+            print(f"[ERROR] {file_path} not found")
 
 def main():
     """Main function"""
@@ -269,12 +269,12 @@ def main():
         
         # Step 1: Remove all existing modules
         if not remove_all_modules():
-            print("❌ Failed to remove existing modules")
+            print("[ERROR] Failed to remove existing modules")
             return
         
         # Step 2: Create test plugin
         if not create_test_plugin():
-            print("❌ Failed to create test plugin")
+            print("[ERROR] Failed to create test plugin")
             return
         
         # Step 3: Create test modules with names containing spaces to test slug generation
@@ -285,19 +285,19 @@ def main():
         
         for module_name, description, tags, expected_slug in test_modules:
             if not create_test_module(module_name, description, tags, expected_slug):
-                print(f"❌ Failed to create test module: {module_name}")
+                print(f"[ERROR] Failed to create test module: {module_name}")
                 return
         
         # Step 4: Verify results
         verify_test_results()
         
-        print(f"\n🎉 Test completed successfully!")
+        print(f"\n[SUCCESS] Test completed successfully!")
         print("\n📋 KEY DEMONSTRATION - Slug vs Name Usage:")
-        print("  • Module NAMES: 'Test Reverb' and 'Multi Filter' (user-facing, can have spaces)")
-        print("  • Module SLUGS: 'TestReverb' and 'MultiFilter' (used for files/code, no spaces)")
-        print("  • Files created: TestReverb.cpp, MultiFilter.cpp (using slugs)")
-        print("  • C++ identifiers: modelTestReverb, modelMultiFilter (using slugs)")
-        print("  • JSON displays: Both name and slug are preserved appropriately")
+        print("  - Module NAMES: 'Test Reverb' and 'Multi Filter' (user-facing, can have spaces)")
+        print("  - Module SLUGS: 'TestReverb' and 'MultiFilter' (used for files/code, no spaces)")
+        print("  - Files created: TestReverb.cpp, MultiFilter.cpp (using slugs)")
+        print("  - C++ identifiers: modelTestReverb, modelMultiFilter (using slugs)")
+        print("  - JSON displays: Both name and slug are preserved appropriately")
         print("\nFiles have been left in place for verification.")
         print("You can examine the generated files to confirm everything worked correctly.")
         print("\nTo clean up, run: python3 scripts/test/removeAll.py")

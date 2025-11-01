@@ -14,7 +14,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("❌ This script must be run from the project base directory.")
+        print("[ERROR] This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/createPlugin.py")
@@ -100,7 +100,7 @@ def copy_and_process_vcv_plugin_json(replacements):
     with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
-    print(f"✓ Created VCV plugin.json at {target_path}")
+    print(f"[OK] Created VCV plugin.json at {target_path}")
 
 def copy_and_process_metamodule_plugin_json(replacements):
     """Copy and process MetaModule plugin-mm.json template"""
@@ -121,7 +121,7 @@ def copy_and_process_metamodule_plugin_json(replacements):
     with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
-    print(f"✓ Created MetaModule plugin-mm.json at {target_path}")
+    print(f"[OK] Created MetaModule plugin-mm.json at {target_path}")
 
 def copy_and_process_vcv_makefile(replacements):
     """Copy and process VCV Makefile template"""
@@ -143,7 +143,7 @@ def copy_and_process_vcv_makefile(replacements):
     with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
-    print(f"✓ Created VCV Makefile at {target_path}")
+    print(f"[OK] Created VCV Makefile at {target_path}")
 
 def copy_and_process_metamodule_cmake(replacements):
     """Copy and process MetaModule CMakeLists.txt template"""
@@ -164,7 +164,7 @@ def copy_and_process_metamodule_cmake(replacements):
     with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
-    print(f"✓ Created MetaModule CMakeLists.txt at {target_path}")
+    print(f"[OK] Created MetaModule CMakeLists.txt at {target_path}")
 
 def copy_vcv_plugin_sources():
     """Copy VCV plugin.cpp and plugin.hpp templates"""
@@ -180,7 +180,7 @@ def copy_vcv_plugin_sources():
         content = f.read()
     with open(target_hpp, 'w', newline='\n') as f:
         f.write(content)
-    print(f"✓ Created VCV plugin.hpp at {target_hpp}")
+    print(f"[OK] Created VCV plugin.hpp at {target_hpp}")
     
     # Copy plugin.cpp
     template_cpp = project_root / "templates" / "vcv" / "src" / "plugin.cpp"
@@ -191,7 +191,7 @@ def copy_vcv_plugin_sources():
         content = f.read()
     with open(target_cpp, 'w', newline='\n') as f:
         f.write(content)
-    print(f"✓ Created VCV plugin.cpp at {target_cpp}")
+    print(f"[OK] Created VCV plugin.cpp at {target_cpp}")
 
 def main():
     """Main function"""
@@ -220,7 +220,7 @@ def main():
         copy_and_process_metamodule_plugin_json(replacements)
         copy_and_process_metamodule_cmake(replacements)
         
-        print("\n✓ Plugin created successfully!")
+        print("\n[OK] Plugin created successfully!")
         print("Next steps:")
         print("1. Use createModule.py to add modules to your plugin")
         print("2. Build for VCV Rack: cd VcvModules && make")
@@ -229,7 +229,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"❌ {e}")
+        print(f"[ERROR] {e}")
 
 if __name__ == "__main__":
     main()

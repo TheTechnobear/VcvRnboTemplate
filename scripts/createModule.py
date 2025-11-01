@@ -13,7 +13,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("❌ This script must be run from the project base directory.")
+        print("[ERROR] This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/createModule.py")
@@ -28,16 +28,16 @@ def check_plugin_exists():
     mm_plugin_json = project_root / "plugin-mm.json"
     
     if not vcv_plugin_json.exists():
-        print("❌ VcvModules/plugin.json not found.")
+        print("[ERROR] VcvModules/plugin.json not found.")
         print("Please run 'python3 scripts/createPlugin.py' first to create the plugin.")
         sys.exit(1)
     
     if not mm_plugin_json.exists():
-        print("❌ plugin-mm.json not found.")
+        print("[ERROR] plugin-mm.json not found.")
         print("Please run 'python3 scripts/createPlugin.py' first to create the plugin.")
         sys.exit(1)
     
-    print("✓ Found existing plugin configuration files")
+    print("[OK] Found existing plugin configuration files")
     return vcv_plugin_json, mm_plugin_json
 
 def get_module_slug():
@@ -50,18 +50,18 @@ def get_module_slug():
         module_slug = input("Enter module slug (e.g., 'Reverb', 'MultiFilter', 'MyDelay'): ").strip()
         
         if not module_slug:
-            print("❌ Module slug is required!")
+            print("[ERROR] Module slug is required!")
             continue
         
         # Validate slug - only letters, numbers, and underscores
         if not module_slug.replace('_', '').isalnum():
-            print("❌ Module slug can only contain letters, numbers, and underscores (no spaces or special characters)")
+            print("[ERROR] Module slug can only contain letters, numbers, and underscores (no spaces or special characters)")
             print("Examples: 'Reverb', 'MultiFilter', 'My_Delay'")
             continue
         
         # Additional check to ensure it starts with a letter (good C++ practice)
         if not module_slug[0].isalpha():
-            print("❌ Module slug should start with a letter")
+            print("[ERROR] Module slug should start with a letter")
             continue
             
         return module_slug
@@ -73,7 +73,7 @@ def get_module_name():
     
     module_name = input("Enter module name: ").strip()
     while not module_name:
-        print("❌ Module name is required!")
+        print("[ERROR] Module name is required!")
         module_name = input("Enter module name: ").strip()
     
     return module_name
@@ -84,14 +84,14 @@ def select_panel():
     res_dir = project_root / "VcvModules" / "res"
     
     if not res_dir.exists():
-        print("❌ VcvModules/res directory not found!")
+        print("[ERROR] VcvModules/res directory not found!")
         sys.exit(1)
     
     # Find all .svg files in res directory
     svg_files = list(res_dir.glob("*.svg"))
     
     if not svg_files:
-        print("❌ No SVG panel files found in VcvModules/res/")
+        print("[ERROR] No SVG panel files found in VcvModules/res/")
         print("Please add some panel files (e.g., Blank10U.svg) to the res directory")
         sys.exit(1)
     
@@ -130,11 +130,11 @@ def copy_and_process_template(module_name, module_slug, panel_filename):
     target_path = project_root / "VcvModules" / "src" / f"{module_slug}.cpp"
     
     if not template_path.exists():
-        print(f"❌ Template file not found at {template_path}")
+        print(f"[ERROR] Template file not found at {template_path}")
         sys.exit(1)
     
     if target_path.exists():
-        print(f"❌ Module file {target_path} already exists!")
+        print(f"[ERROR] Module file {target_path} already exists!")
         overwrite = input("Overwrite existing file? (y/N): ").strip().lower()
         if overwrite != 'y':
             print("Module creation cancelled.")
@@ -161,7 +161,7 @@ def copy_and_process_template(module_name, module_slug, panel_filename):
     with open(target_path, 'w', newline='\n') as f:
         f.write(processed_content)
     
-    print(f"✓ Created module source file: {target_path}")
+    print(f"[OK] Created module source file: {target_path}")
     return target_path
 
 def create_rnbo_directory(module_slug):
@@ -173,7 +173,7 @@ def create_rnbo_directory(module_slug):
         print(f"Warning: RNBO directory {rnbo_dir} already exists")
     else:
         os.makedirs(rnbo_dir, exist_ok=True)
-        print(f"✓ Created RNBO directory: {rnbo_dir}")
+        print(f"[OK] Created RNBO directory: {rnbo_dir}")
     
     return rnbo_dir
 
@@ -183,7 +183,7 @@ def update_plugin_hpp(module_slug):
     plugin_hpp_path = project_root / "VcvModules" / "src" / "plugin.hpp"
     
     if not plugin_hpp_path.exists():
-        print(f"❌ {plugin_hpp_path} not found!")
+        print(f"[ERROR] {plugin_hpp_path} not found!")
         return False
     
     # Read current content
@@ -193,7 +193,7 @@ def update_plugin_hpp(module_slug):
     # Check if model declaration already exists
     model_declaration = f"extern Model* model{module_slug};"
     if model_declaration in content:
-        print(f"✓ Model declaration for {module_slug} already exists in plugin.hpp")
+        print(f"[OK] Model declaration for {module_slug} already exists in plugin.hpp")
         return True
     
     # Find the best insertion point: after existing model declarations or at the end
@@ -219,7 +219,7 @@ def update_plugin_hpp(module_slug):
     with open(plugin_hpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(lines))
     
-    print(f"✓ Added model declaration to plugin.hpp: {model_declaration}")
+    print(f"[OK] Added model declaration to plugin.hpp: {model_declaration}")
     return True
 
 def update_plugin_cpp(module_slug):
@@ -228,7 +228,7 @@ def update_plugin_cpp(module_slug):
     plugin_cpp_path = project_root / "VcvModules" / "src" / "plugin.cpp"
     
     if not plugin_cpp_path.exists():
-        print(f"❌ {plugin_cpp_path} not found!")
+        print(f"[ERROR] {plugin_cpp_path} not found!")
         return False
     
     # Read current content
@@ -238,7 +238,7 @@ def update_plugin_cpp(module_slug):
     # Check if model is already added
     model_add = f"p->addModel(model{module_slug});"
     if model_add in content:
-        print(f"✓ Model {module_slug} already added in plugin.cpp")
+        print(f"[OK] Model {module_slug} already added in plugin.cpp")
         return True
     
     # Find the init function and add the model before the closing brace
@@ -264,7 +264,7 @@ def update_plugin_cpp(module_slug):
                 break
     
     if insert_position == -1:
-        print("❌ Could not find appropriate location to add model in plugin.cpp")
+        print("[ERROR] Could not find appropriate location to add model in plugin.cpp")
         return False
     
     # Insert the new addModel call with proper indentation
@@ -274,7 +274,7 @@ def update_plugin_cpp(module_slug):
     with open(plugin_cpp_path, 'w', newline='\n') as f:
         f.write('\n'.join(lines))
     
-    print(f"✓ Added model to plugin.cpp: {model_add}")
+    print(f"[OK] Added model to plugin.cpp: {model_add}")
     return True
 
 def update_vcv_makefile(module_slug):
@@ -293,7 +293,7 @@ def update_vcv_makefile(module_slug):
     # Check if module is already in Makefile
     module_source = f"src/{module_slug}.cpp"
     if module_source in content:
-        print(f"✓ Module {module_slug} already in VCV Makefile")
+        print(f"[OK] Module {module_slug} already in VCV Makefile")
         return True
     
     # Replace the __MODULE_SOURCES__ placeholder or add to existing sources
@@ -315,7 +315,7 @@ def update_vcv_makefile(module_slug):
     with open(makefile_path, 'w', newline='\n') as f:
         f.write(content)
     
-    print(f"✓ Added {module_source} to VCV Makefile")
+    print(f"[OK] Added {module_source} to VCV Makefile")
     return True
 
 def update_metamodule_cmake(module_slug):
@@ -334,7 +334,7 @@ def update_metamodule_cmake(module_slug):
     # Check if module is already in CMakeLists.txt
     module_source = f"${{SOURCE_DIR}}/src/{module_slug}.cpp"
     if module_source in content:
-        print(f"✓ Module {module_slug} already in MetaModule CMakeLists.txt")
+        print(f"[OK] Module {module_slug} already in MetaModule CMakeLists.txt")
         return True
     
     # Replace the __MODULE_SOURCES__ placeholder or add to existing sources
@@ -356,14 +356,14 @@ def update_metamodule_cmake(module_slug):
     with open(cmake_path, 'w', newline='\n') as f:
         f.write(content)
     
-    print(f"✓ Added {module_source} to MetaModule CMakeLists.txt")
+    print(f"[OK] Added {module_source} to MetaModule CMakeLists.txt")
     return True
 
 def get_module_details(module_name, module_slug):
     """Prompt user for additional module details for plugin.json"""
     print(f"\nModule details for plugin.json:")
-    print(f"  • Slug: {module_slug} (technical identifier)")
-    print(f"  • Name: {module_name} (display name)")
+    print(f"  - Slug: {module_slug} (technical identifier)")
+    print(f"  - Name: {module_name} (display name)")
     
     description = input(f"Module description (e.g., 'RNBO reverb module'): ").strip()
     if not description:
@@ -403,7 +403,7 @@ def update_plugin_json(module_slug, module_details):
         modules = plugin_data.get('modules', [])
         for existing_module in modules:
             if existing_module.get('slug') == module_details['slug']:
-                print(f"✓ Module with slug '{module_details['slug']}' already exists in plugin.json")
+                print(f"[OK] Module with slug '{module_details['slug']}' already exists in plugin.json")
                 return True
         
         # Add the new module
@@ -414,7 +414,7 @@ def update_plugin_json(module_slug, module_details):
         with open(plugin_json_path, 'w', newline='\n') as f:
             json.dump(plugin_data, f, indent=2)
         
-        print(f"✓ Added module to plugin.json:")
+        print(f"[OK] Added module to plugin.json:")
         print(f"  Slug: {module_details['slug']}")
         print(f"  Name: {module_details['name']}")
         print(f"  Description: {module_details['description']}")
@@ -423,7 +423,7 @@ def update_plugin_json(module_slug, module_details):
         return True
         
     except json.JSONDecodeError as e:
-        print(f"❌ Invalid JSON in {plugin_json_path}: {e}")
+        print(f"[ERROR] Invalid JSON in {plugin_json_path}: {e}")
         return False
     except Exception as e:
         print(f"Error updating plugin.json: {e}")
@@ -447,7 +447,7 @@ def update_plugin_mm_json(module_slug, module_details):
         modules = plugin_data.get('MetaModuleIncludedModules', [])
         for existing_module in modules:
             if existing_module.get('slug') == module_details['slug']:
-                print(f"✓ Module with slug '{module_details['slug']}' already exists in plugin-mm.json")
+                print(f"[OK] Module with slug '{module_details['slug']}' already exists in plugin-mm.json")
                 return True
         
         # Create MetaModule module entry
@@ -465,7 +465,7 @@ def update_plugin_mm_json(module_slug, module_details):
         with open(plugin_mm_json_path, 'w', newline='\n') as f:
             json.dump(plugin_data, f, indent=2)
         
-        print(f"✓ Added module to plugin-mm.json:")
+        print(f"[OK] Added module to plugin-mm.json:")
         print(f"  Slug: {mm_module['slug']}")
         print(f"  Name: {mm_module['name']}")
         print(f"  DisplayName: {mm_module['displayName']}")
@@ -473,7 +473,7 @@ def update_plugin_mm_json(module_slug, module_details):
         return True
         
     except json.JSONDecodeError as e:
-        print(f"❌ Invalid JSON in {plugin_mm_json_path}: {e}")
+        print(f"[ERROR] Invalid JSON in {plugin_mm_json_path}: {e}")
         return False
     except Exception as e:
         print(f"Error updating plugin-mm.json: {e}")
@@ -525,7 +525,7 @@ def main():
         # Add module to plugin-mm.json
         update_plugin_mm_json(module_slug, module_details)
         
-        print(f"\n✓ Module '{module_name}' created successfully!")
+        print(f"\n[OK] Module '{module_name}' created successfully!")
         print("\nNext steps:")
         print(f"1. Export your RNBO patch to: {rnbo_dir}/")
         print(f"   - The export should create {module_slug}.cpp.h")
@@ -534,7 +534,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
     except Exception as e:
-        print(f"❌ {e}")
+        print(f"[ERROR] {e}")
 
 if __name__ == "__main__":
     main()

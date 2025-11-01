@@ -24,7 +24,7 @@ def test_slug_validation():
         ("", False, "empty slug"),
     ]
     
-    print("🧪 Testing slug validation...")
+    print("[TEST] Testing slug validation...")
     print("=" * 50)
     
     for slug_input, should_be_valid, description in test_cases:
@@ -46,21 +46,21 @@ def test_slug_validation():
             
             if should_be_valid:
                 if "Module slug can only contain" in output or "Module slug should start with a letter" in output:
-                    print(f"❌ Expected valid but got validation error")
+                    print(f"[ERROR] Expected valid but got validation error")
                 else:
-                    print(f"✅ Correctly accepted valid slug")
+                    print(f"[PASS] Correctly accepted valid slug")
             else:
                 if "Module slug can only contain" in output or "Module slug should start with a letter" in output or "Module slug is required" in output:
-                    print(f"✅ Correctly rejected invalid slug")
+                    print(f"[PASS] Correctly rejected invalid slug")
                 else:
-                    print(f"❌ Expected validation error but slug was accepted")
+                    print(f"[ERROR] Expected validation error but slug was accepted")
                     
         except subprocess.TimeoutExpired:
-            print("⏰ Test timed out (expected for valid slugs)")
+            print("[TIME] Test timed out (expected for valid slugs)")
         except KeyboardInterrupt:
-            print("⚠️  Test interrupted")
+            print("[WARNING]  Test interrupted")
         except Exception as e:
-            print(f"❌ Test error: {e}")
+            print(f"[ERROR] Test error: {e}")
 
 if __name__ == "__main__":
     test_slug_validation()

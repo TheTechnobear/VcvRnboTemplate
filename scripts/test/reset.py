@@ -24,7 +24,7 @@ def remove_file_safe(file_path):
     """Safely remove a file if it exists."""
     if os.path.exists(file_path):
         os.remove(file_path)
-        print(f"✓ Removed file: {file_path}")
+        print(f"[OK] Removed file: {file_path}")
         return True
     return False
 
@@ -32,7 +32,7 @@ def remove_dir_safe(dir_path):
     """Safely remove a directory if it exists."""
     if os.path.exists(dir_path):
         shutil.rmtree(dir_path)
-        print(f"✓ Removed directory: {dir_path}")
+        print(f"[OK] Removed directory: {dir_path}")
         return True
     return False
 
@@ -43,17 +43,17 @@ def reset_project(force=False):
     print(f"Running from project directory: {project_root}")
     
     if not force:
-        print("\n⚠️  WARNING: This will permanently remove ALL generated plugin files!")
+        print("\n[WARNING]  WARNING: This will permanently remove ALL generated plugin files!")
         print("\nFiles and directories that will be removed:")
-        print("  • VcvModules/plugin.json")
-        print("  • VcvModules/Makefile") 
-        print("  • VcvModules/src/plugin.hpp")
-        print("  • VcvModules/src/plugin.cpp")
-        print("  • VcvModules/src/*.cpp (all module files)")
-        print("  • VcvModules/src/*-rnbo/ (all RNBO directories)")
-        print("  • plugin-mm.json")
-        print("  • CMakeLists.txt")
-        print("\n❌ This action cannot be undone!")
+        print("  - VcvModules/plugin.json")
+        print("  - VcvModules/Makefile") 
+        print("  - VcvModules/src/plugin.hpp")
+        print("  - VcvModules/src/plugin.cpp")
+        print("  - VcvModules/src/*.cpp (all module files)")
+        print("  - VcvModules/src/*-rnbo/ (all RNBO directories)")
+        print("  - plugin-mm.json")
+        print("  - CMakeLists.txt")
+        print("\n[ERROR] This action cannot be undone!")
         
         response = input("\nAre you sure you want to reset the project? (yes/no): ")
         if response.lower() != 'yes':
@@ -90,7 +90,7 @@ def reset_project(force=False):
             if rnbo_dir.is_dir():
                 remove_dir_safe(rnbo_dir)
     
-    print("\n✅ Project reset completed!")
+    print("\n[PASS] Project reset completed!")
     print("\nNext steps:")
     print("1. Run createPlugin.py to create a new plugin")
     print("2. Run createModule.py to add modules")
@@ -123,7 +123,7 @@ Examples:
         print("\n\nOperation cancelled by user.")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\n[ERROR] Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

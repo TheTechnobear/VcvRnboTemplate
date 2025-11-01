@@ -21,7 +21,7 @@ def ensure_run_from_base_directory():
     expected_items = ['scripts', 'templates', 'VcvModules', 'CMakePresets.json']
     
     if not all((current_dir / item).exists() for item in expected_items):
-        print("❌ This script must be run from the project base directory.")
+        print("[ERROR] This script must be run from the project base directory.")
         print(f"Current directory: {current_dir}")
         print("Please run from the directory containing 'scripts', 'templates', 'VcvModules', etc.")
         print("Example: python3 scripts/check.py")
@@ -32,19 +32,19 @@ def ensure_run_from_base_directory():
 def check_file_exists(file_path, description):
     """Check if a file exists and report status"""
     if file_path.exists():
-        print(f"✅ {description}")
+        print(f"[PASS] {description}")
         return True
     else:
-        print(f"❌ {description}")
+        print(f"[ERROR] {description}")
         return False
 
 def check_command_available(command, description):
     """Check if a command is available in PATH"""
     if shutil.which(command):
-        print(f"✅ {description}")
+        print(f"[PASS] {description}")
         return True
     else:
-        print(f"❌ {description}")
+        print(f"[ERROR] {description}")
         return False
 
 def check_arm_compiler():
@@ -62,24 +62,24 @@ def check_arm_compiler():
             missing.append(cmd)
     
     if not missing:
-        print("✅ ARM toolchain (arm-none-eabi-gcc) available")
+        print("[PASS] ARM toolchain (arm-none-eabi-gcc) available")
         return True
     else:
-        print(f"❌ ARM toolchain missing: {', '.join(missing)}")
+        print(f"[ERROR] ARM toolchain missing: {', '.join(missing)}")
         
         # Windows-specific guidance
         if os.name == 'nt':  # Windows
-            print("   📝 Windows users: Ensure ARM GNU Toolchain is installed and added to PATH")
-            print("   💡 Common install locations:")
+            print("   [NOTE] Windows users: Ensure ARM GNU Toolchain is installed and added to PATH")
+            print("   [TIP] Common install locations:")
             print("      - C:\\Program Files (x86)\\Arm GNU Toolchain\\*\\bin")
             print("      - C:\\Program Files\\Arm GNU Toolchain\\*\\bin")
-            print("   🔧 Add the toolchain bin directory to your system PATH environment variable")
+            print("   [TOOL] Add the toolchain bin directory to your system PATH environment variable")
         
         return False
 
 def check_environment_setup():
     """Check basic environment setup"""
-    print("🔧 Checking Development Environment Setup")
+    print("[TOOL] Checking Development Environment Setup")
     print("=" * 50)
     
     project_root = Path.cwd()
@@ -110,13 +110,13 @@ def check_environment_setup():
             issues.append("Install ARM GNU Toolchain (arm-none-eabi-gcc)")
     
     if issues:
-        print(f"\n❌ Environment setup issues found:")
+        print(f"\n[ERROR] Environment setup issues found:")
         for i, issue in enumerate(issues, 1):
             print(f"   {i}. {issue}")
         print("\nPlease fix these issues before continuing.")
         return False
     else:
-        print("\n✅ Environment setup is complete!")
+        print("\n[PASS] Environment setup is complete!")
         return True
 
 def check_plugin_exists():
@@ -137,7 +137,7 @@ def get_modules_from_plugin_json(plugin_json_path):
             data = json.load(f)
         return data.get('modules', [])
     except Exception as e:
-        print(f"❌ Error reading plugin.json: {e}")
+        print(f"[ERROR] Error reading plugin.json: {e}")
         return []
 
 def check_module_status(module_slug):
@@ -189,30 +189,30 @@ def check_module_status(module_slug):
 
 def check_project_status():
     """Check current project status and provide guidance"""
-    print("\n🎯 Checking Project Status")
+    print("\n[TARGET] Checking Project Status")
     print("=" * 50)
     
     # Check if plugin exists
     plugin_exists, plugin_json_path = check_plugin_exists()
     
     if not plugin_exists:
-        print("❌ No plugin found")
-        print("\n📋 Next step: Create a plugin")
+        print("[ERROR] No plugin found")
+        print("\n[NEXT] Next step: Create a plugin")
         print("   Run: python3 scripts/createPlugin.py")
         return
     
-    print("✅ Plugin configuration found")
+    print("[PASS] Plugin configuration found")
     
     # Get modules from plugin.json
     modules = get_modules_from_plugin_json(plugin_json_path)
     
     if not modules:
-        print("❌ No modules defined in plugin")
-        print("\n📋 Next step: Create a module")
+        print("[ERROR] No modules defined in plugin")
+        print("\n[NEXT] Next step: Create a module")
         print("   Run: python3 scripts/createModule.py")
         return
     
-    print(f"✅ Found {len(modules)} module(s) in plugin configuration")
+    print(f"[PASS] Found {len(modules)} module(s) in plugin configuration")
     
     # Check each module
     all_complete = True
@@ -220,44 +220,44 @@ def check_project_status():
     
     for module in modules:
         module_slug = module.get('slug', 'unknown')
-        print(f"\n🔍 Checking module: {module_slug}")
+        print(f"\n[CHECK] Checking module: {module_slug}")
         
         status, message = check_module_status(module_slug)
         
         if status == "complete":
-            print(f"   ✅ {message}")
+            print(f"   [PASS] {message}")
         elif status == "missing_source":
-            print(f"   ❌ {message}")
+            print(f"   [ERROR] {message}")
             issues.append(f"Module {module_slug}: Run 'python3 scripts/createModule.py' to recreate")
             all_complete = False
         elif status == "missing_rnbo_dir":
-            print(f"   ❌ {message}")
+            print(f"   [ERROR] {message}")
             issues.append(f"Module {module_slug}: Run 'python3 scripts/createModule.py' to recreate")
             all_complete = False
         elif status == "no_export":
-            print(f"   ⚠️  {message}")
+            print(f"   [WARNING]  {message}")
             issues.append(f"Module {module_slug}: Export RNBO patch from Max to VcvModules/src/{module_slug}-rnbo/")
             all_complete = False
         elif status == "wrong_name":
-            print(f"   ⚠️  {message}")
+            print(f"   [WARNING]  {message}")
             issues.append(f"Module {module_slug}: Re-export with correct name '{module_slug}.cpp.h'")
             all_complete = False
         elif status == "wrong_extension":
-            print(f"   ⚠️  {message}")
+            print(f"   [WARNING]  {message}")
             issues.append(f"Module {module_slug}: Re-export from Max using 'C++ Code Export' format (not 'Audio Unit')")
             all_complete = False
         else:
-            print(f"   ⚠️  {message}")
+            print(f"   [WARNING]  {message}")
             issues.append(f"Module {module_slug}: Check RNBO export directory and re-export as '{module_slug}.cpp.h'")
             all_complete = False
     
     if all_complete:
-        print(f"\n🎉 All modules are complete and ready to build!")
-        print("\n📋 Next steps:")
+        print(f"\n[SUCCESS] All modules are complete and ready to build!")
+        print("\n[NEXT] Next steps:")
         print("   1. Build VCV Rack: cd VcvModules && make")
         print("   2. Build MetaModule: cmake --fresh -B build && cmake --build build")
     else:
-        print(f"\n❌ Issues found with modules:")
+        print(f"\n[ERROR] Issues found with modules:")
         for i, issue in enumerate(issues, 1):
             print(f"   {i}. {issue}")
 
@@ -268,7 +268,7 @@ def main():
         project_root = ensure_run_from_base_directory()
         print(f"Running from project directory: {project_root}")
         
-        print("\n🧪 VCV Rack RNBO Template - Setup Checker")
+        print("\n[TEST] VCV Rack RNBO Template - Setup Checker")
         print("=" * 60)
         
         # Check environment setup
@@ -278,7 +278,7 @@ def main():
             # Check project status
             check_project_status()
         else:
-            print("\n⚠️  Fix environment issues before checking project status.")
+            print("\n[WARNING]  Fix environment issues before checking project status.")
             return 1
         
         return 0
@@ -287,7 +287,7 @@ def main():
         print("\n\nOperation cancelled by user.")
         return 1
     except Exception as e:
-        print(f"\n❌ {e}")
+        print(f"\n[ERROR] {e}")
         return 1
 
 if __name__ == "__main__":
