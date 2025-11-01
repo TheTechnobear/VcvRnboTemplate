@@ -19,7 +19,12 @@ Follow the [VCV Rack Building Guide](https://vcvrack.com/manual/Building) for yo
 **Windows Users**: The VCV guide will tell you to install MSYS2. After installation, always use the **MinGW 64-bit shell** from your Start menu for all commands in this project.
 
 **ARM Toolchain (for MetaModule):**
-Download ARM GNU Toolchain 12.2 or 12.3 from [ARM Developer Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads). Get the package for your host computer ending in `arm-none-eabi`. Ensure it's on your PATH.
+Download ARM GNU Toolchain 12.2 or 12.3 from [ARM Developer Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads). Get the package for your host computer ending in `arm-none-eabi`. 
+Ensure it's on your PATH.
+e.g. for windows using MSYS32, assuming default install
+```bash 
+export PATH=/c/Program\ Files\ \(x86\)/Arm\ GNU\ Toolchain\arm-none-eabi/12.3\ rel1/bin:$PATH
+```
 
 ### 2. Get the Project
 
