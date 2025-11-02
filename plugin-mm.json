@@ -1,0 +1,9 @@
+{
+  "MetaModuleBrandName": "Test Plugin",
+  "MetaModuleBrandSlug": "TestPlug",
+  "MetaModulePluginMaintainer": "Test Author",
+  "MetaModulePluginMaintainerEmail": "test@example.com",
+  "MetaModulePluginMaintainerUrl": "https://example.com",
+  "MetaModuleDescription": "Test RNBO Plugin for VCV Rack",
+  "MetaModuleIncludedModules": []
+}
