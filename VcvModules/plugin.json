@@ -13,5 +13,15 @@
   "sourceUrl": "",
   "donateUrl": "",
   "changelogUrl": "",
-  "modules": []
+  "modules": [
+    {
+      "slug": "Demo",
+      "name": "Demo",
+      "description": "Demo RNBO module for testing",
+      "tags": [
+        "audio",
+        "demo"
+      ]
+    }
+  ]
 }

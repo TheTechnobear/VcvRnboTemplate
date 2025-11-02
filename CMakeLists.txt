@@ -32,6 +32,7 @@ target_include_directories(VcvMetaModules PRIVATE
 target_sources(VcvMetaModules
     PRIVATE
     ${SOURCE_DIR}/src/plugin.cpp
+    ${SOURCE_DIR}/src/Demo.cpp
     
 )
 

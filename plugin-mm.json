@@ -5,5 +5,11 @@
   "MetaModulePluginMaintainerEmail": "test@example.com",
   "MetaModulePluginMaintainerUrl": "https://example.com",
   "MetaModuleDescription": "Test RNBO Plugin for VCV Rack",
-  "MetaModuleIncludedModules": []
+  "MetaModuleIncludedModules": [
+    {
+      "slug": "Demo",
+      "name": "Demo",
+      "displayName": "Demo RNBO module for testing"
+    }
+  ]
 }

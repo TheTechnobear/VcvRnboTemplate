@@ -20,10 +20,10 @@
 // use the generic UI - disable by commenting out (with //)
 // to use your own UI you will need to : 
 // - comment GENERIC_UI out 
-// - create a panel file (res/__MOD__.svg), which has params and IO in same order as rnbo patch
-// - run $RACK_DIR/helper.py createmodule __MOD__ res/__MOD__.svg tmp.cpp
+// - create a panel file (res/Demo.svg), which has params and IO in same order as rnbo patch
+// - run $RACK_DIR/helper.py createmodule Demo res/Demo.svg tmp.cpp
 // - from tmp.cpp copy enum ParamId, InputId, OutputId and place in this file after enum LightId
-// - from tmp.cpp copy ___MOD__Widget and replace where indicated below (search CUSTOM WIDGET)
+// - from tmp.cpp copy _DemoWidget and replace where indicated below (search CUSTOM WIDGET)
 // to come: more information in documentation and possible yt video on my channel.
 #define GENERIC_UI
 
@@ -52,11 +52,11 @@ static void printErrorMessage(const char* message) {
 #pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC diagnostic ignored "-Wsuggest-override"
 // #endif
-#include "__MOD__-rnbo/__MOD__.cpp.h"
+#include "Demo-rnbo/Demo.cpp.h"
 #pragma GCC diagnostic pop
 
 #ifdef GENERIC_UI
-namespace __MOD___UI {
+namespace Demo_UI {
 const float titleSpaceY = 20.f;
 const float inputSpaceY = 20.f;
 const float outputSpaceY = 20.f;
@@ -64,14 +64,14 @@ const float outputSpaceY = 20.f;
 const float borderX = 17.f;
 const float spaceY = 15.f;
 const float spaceX = 15.f;
-};  // namespace __MOD___UI
+};  // namespace Demo_UI
 #endif
 
-struct __MOD__ : Module {
+struct Demo : Module {
     enum LightId { LIGHTS_LEN };
     //if you use a CUSTOM UI, this is where you need to add enum paramId, enum InputId, enum OutputId 
 
-    __MOD__() {
+    Demo() {
         rnboInit();
         config(rnbo_.nParams_, rnbo_.nInputs_, rnbo_.nOutputs_, LIGHTS_LEN);
         for (int i = 0; i < rnbo_.nParams_; i++) {
@@ -97,7 +97,7 @@ struct __MOD__ : Module {
         }
     }
 
-    ~__MOD__() override { rnboDeInit(); }
+    ~Demo() override { rnboDeInit(); }
 
 
     void process(const ProcessArgs& args) override { doProcess(args); }
@@ -113,7 +113,7 @@ struct __MOD__ : Module {
     unsigned int sampleRate_ = 48000;
 
     struct RNBOPatch {
-        RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>> patch_;
+        RNBO::DemoRnbo<RNBO::MinimalEngine<>> patch_;
         int nInputs_ = 0;
         RNBO::number** inputBuffers_;
         int nOutputs_ = 0;
@@ -122,7 +122,7 @@ struct __MOD__ : Module {
         float* lastParamVals_;
     } rnbo_;
 
-    RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>>* getRnboPatch() { return &rnbo_.patch_; }
+    RNBO::DemoRnbo<RNBO::MinimalEngine<>>* getRnboPatch() { return &rnbo_.patch_; }
 
     void onSampleRateChange(const SampleRateChangeEvent& e) override {
         sampleRate_ = e.sampleRate;
@@ -130,7 +130,7 @@ struct __MOD__ : Module {
     }
 };
 
-void __MOD__::rnboInit() {
+void Demo::rnboInit() {
     rnbo_.patch_.initialize();
 
     rnbo_.nInputs_ = rnbo_.patch_.getNumInputChannels();
@@ -147,7 +147,7 @@ void __MOD__::rnboInit() {
     rnbo_.patch_.prepareToProcess(bufferSize_, sampleRate_, true);
 }
 
-void __MOD__::rnboDeInit() {
+void Demo::rnboDeInit() {
     for (int i = 0; i < rnbo_.nInputs_; i++) { delete rnbo_.inputBuffers_[i]; }
     delete rnbo_.inputBuffers_;
     for (int i = 0; i < rnbo_.nOutputs_; i++) { delete rnbo_.outputBuffers_[i]; }
@@ -157,15 +157,15 @@ void __MOD__::rnboDeInit() {
 
 
 #ifdef GENERIC_UI
-using namespace __MOD___UI;
-struct __MOD__Widget : ModuleWidget {
-    __MOD__Widget(__MOD__* module) {
+using namespace Demo_UI;
+struct DemoWidget : ModuleWidget {
+    DemoWidget(Demo* module) {
         /// a generic layout for modules
         // if you want a custom UI layout, you could replace this with a generated one from vcv sdk
         // you would need to ensure the parameter, input and output indexes matched RNBO
 
         setModule(module);
-        setPanel(createPanel(asset::plugin(pluginInstance, "res/__PANEL__")));
+        setPanel(createPanel(asset::plugin(pluginInstance, "res/Blank10U.svg")));
 
         addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
         addChild(createWidget<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -175,14 +175,14 @@ struct __MOD__Widget : ModuleWidget {
         const float maxWidthInPx = box.size.x;
         const float maxWidth = (maxWidthInPx / mm2px(1.0)) - borderX;
 #ifdef GENERIC_TITLE_LABEL
-        addLabel(mm2px(Vec(borderX / 2.0f, 0)), "__MODNAME__", 18.f, maxWidth, nvgRGB(0xff, 0x00, 0x00));
+        addLabel(mm2px(Vec(borderX / 2.0f, 0)), "Demo", 18.f, maxWidth, nvgRGB(0xff, 0x00, 0x00));
 #endif
-        RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>>* pPatch = nullptr;
+        RNBO::DemoRnbo<RNBO::MinimalEngine<>>* pPatch = nullptr;
         if (module) {
             pPatch = module->getRnboPatch();
         } else {
             // model == null  means preview, so we need to query patch directly
-            pPatch = new RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>>();
+            pPatch = new RNBO::DemoRnbo<RNBO::MinimalEngine<>>();
         }
         int nParams = pPatch->getNumParameters();
         int nInputs = pPatch->getNumInputChannels();
@@ -248,13 +248,13 @@ struct __MOD__Widget : ModuleWidget {
 };
 #else 
 // this is where you need to place the CUSTOM WIDGET
-// see above, about generating and creating struct __MOD__Widget
+// see above, about generating and creating struct DemoWidget
 #endif //  GENERIC_UI
 
 
-Model* model__MOD__ = createModel<__MOD__, __MOD__Widget>("__MOD__");
+Model* modelDemo = createModel<Demo, DemoWidget>("Demo");
 
-void __MOD__::doProcess(const ProcessArgs& args) {
+void Demo::doProcess(const ProcessArgs& args) {
     bool rnboProcess = (curBufPos_ == bufferSize_ - 1);
 
     // process input

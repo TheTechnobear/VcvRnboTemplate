@@ -14,6 +14,7 @@ FLAGS += -Isrc -Iinc/rnbo-export/common
 
 SOURCES += \
 src/plugin.cpp \
+src/Demo.cpp \
 
 
 # Add files to the ZIP package when running `make dist`
