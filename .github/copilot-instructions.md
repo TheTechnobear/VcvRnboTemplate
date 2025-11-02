@@ -11,7 +11,9 @@ This is a template system for creating VCV Rack plugins that wrap Cycling '74 RN
   - `templates/vcv/`: VCV Rack-specific templates (Makefile, plugin.json, source templates)
   - `templates/metamodule/`: MetaModule-specific templates (CMakeLists.txt, plugin-mm.json)
 - **`scripts/`**: Python automation enabling users with minimal development experience to create plugins from RNBO exports
-- `inc/rnbo-export/`: RNBO C++ runtime headers (Cycling '74's audio engine)
+  - Core scripts: `check.py`, `createPlugin.py`, `createModule.py`, `removeModule.py`, `addDemo.py`
+  - Testing scripts: `scripts/test/` directory contains validation and debugging tools
+- **`VcvModules/inc/rnbo-export/`**: RNBO C++ runtime headers (Cycling '74's audio engine)
 
 **Development Strategy:** Create MetaModule hardware plugins but test them on desktop VCV Rack first for faster iteration.
 
@@ -108,10 +110,12 @@ This eliminates manual UI coding - the widget adapts to any RNBO patch's paramet
 ## Development Workflow
 
 **Script-Based Development Process:**
-1. **`reset.py`** - Reset project to have no plugin (clean slate)
-2. **`addDemo.py`** - Add demo files from templates to test development environment setup for both VCV and MetaModule builds
-3. **`createPlugin.py`** - Enter plugin metadata (name, maintainer, etc.) to populate `plugin.json` and `plugin-mm.json`
-4. **`createModule.py`** - Create and add a module to the plugin using templates, updates plugin manifests automatically
+1. **`scripts/check.py`** - Verify environment setup and dependencies before starting
+2. **`scripts/test/reset.py`** - Reset project to have no plugin (clean slate)
+3. **`scripts/addDemo.py`** - Add demo files from templates to test development environment setup for both VCV and MetaModule builds
+4. **`scripts/createPlugin.py`** - Enter plugin metadata (name, maintainer, etc.) to populate `plugin.json` and `plugin-mm.json`
+5. **`scripts/createModule.py`** - Create and add a module to the plugin using templates, updates plugin manifests automatically
+6. **`scripts/removeModule.py`** - Remove a module from the plugin (cleans up all associated files and manifest entries)
 
 **Enhanced createModule.py Workflow:**
 1. **Slug Input First**: Prompts for module slug with validation (letters, numbers, underscores only)
@@ -169,11 +173,13 @@ This pattern is essential for performance with RNBO patches.
 
 ## Development Context & Troubleshooting
 
-**Recent Enhancements (November 2024):**
+**Recent Enhancements (November 2024 - January 2025):**
 - Enhanced template system with dual placeholders: `__MOD__` (technical) and `__MODNAME__` (display)
 - Improved user experience in `createModule.py` with slug-first input flow and validation
 - Cross-platform compatibility improvements with ASCII-only characters in all scripts
 - Panel selection system integrated into module creation workflow
+- Added `removeModule.py` script for clean module removal
+- Enhanced debugging and testing scripts in `scripts/test/` directory
 
 **Common Issues & Solutions:**
 
@@ -220,6 +226,12 @@ This pattern is essential for performance with RNBO patches.
 - Verify template files exist before attempting substitution
 - Check that panel SVG files are created in `res/` directory
 - Validate plugin manifest updates for both VCV and MetaModule platforms
+
+**Testing and Validation Workflow:**
+- Use `scripts/test/verifyDemo.py` to validate demo module functionality
+- Use `scripts/test/testSlugValidation.py` to test module naming validation
+- Use `scripts/test/verifyPlaceholders.py` to check template substitution
+- Use `scripts/check.py` to verify complete environment setup before starting development
 
 **Build System Debugging:**
 - VCV Rack: Check `CXXFLAGS += -std=c++17` and include paths

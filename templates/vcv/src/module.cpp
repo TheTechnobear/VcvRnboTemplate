@@ -45,8 +45,6 @@ static void printErrorMessage(const char* message) {
 #pragma GCC diagnostic ignored "-Wsign-compare"
 #pragma GCC diagnostic ignored "-Wswitch"
 #pragma GCC diagnostic ignored "-Wunused-variable"
-
-// mm compiler - warnings
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #pragma GCC diagnostic ignored "-Wunused-value"
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -183,6 +181,7 @@ struct __MOD__Widget : ModuleWidget {
         } else {
             // model == null  means preview, so we need to query patch directly
             pPatch = new RNBO::__MOD__Rnbo<RNBO::MinimalEngine<>>();
+            pPatch->initialize();
         }
         int nParams = pPatch->getNumParameters();
         int nInputs = pPatch->getNumInputChannels();
