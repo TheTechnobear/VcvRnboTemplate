@@ -82,6 +82,17 @@ cd .. && cmake --fresh -B build && cmake --build build
 # Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
 ```
 
+Remember: 
+before runninng this, ARM toolchain must be on your path!
+Windows : 
+```bash
+export PATH=/c/Program\ Files\ \(x86\)/Arm\ GNU\ Toolchain\ arm-none-eabi/12.3\ rel1/bin:$PATH
+```
+macOs : 
+```bash
+export PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin:$PATH
+```
+
 ## Development Tips
 
 ### Quick Iteration
@@ -100,7 +111,8 @@ cd .. && cmake --fresh -B build && cmake --build build
 **Common Issues**:
 - Wrong export filename → Use exact naming: `[ModuleSlug].cpp.h`
 - Missing codegen class → Set to `[ModuleSlug]Rnbo`
-- Build errors → Check toolchain installation
+- Build errors → Check toolchain installation and on path
+- Windows users use :  MSYS2 MinGW 64-bit shell (not command prompt/powershell)
 
 **Get Help**: [4ms MetaModule Forum](https://forum.4ms.info)
 
