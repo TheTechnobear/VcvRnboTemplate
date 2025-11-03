@@ -123,7 +123,7 @@ struct __MOD__ : Module {
 
     void onSampleRateChange(const SampleRateChangeEvent& e) override {
         sampleRate_ = e.sampleRate;
-        rnbo_.patch_.prepareToProcess(bufferSize_, sampleRate_, true);
+        rnbo_.patch_.prepareToProcess(sampleRate_, bufferSize_, false);
     }
 };
 
@@ -141,7 +141,7 @@ void __MOD__::rnboInit() {
     rnbo_.lastParamVals_ = new float[rnbo_.nParams_];
     for (int i = 0; i < rnbo_.nParams_; i++) { rnbo_.lastParamVals_[i] = -1.0; }
 
-    rnbo_.patch_.prepareToProcess(bufferSize_, sampleRate_, true);
+    rnbo_.patch_.prepareToProcess(sampleRate_, bufferSize_, false);
 }
 
 void __MOD__::rnboDeInit() {
@@ -277,7 +277,6 @@ void __MOD__::doProcess(const ProcessArgs& args) {
                 rnbo_.lastParamVals_[i] = param;
             }
         }
-        rnbo_.patch_.prepareToProcess(sampleRate_, bufferSize_, false);
         rnbo_.patch_.process(rnbo_.inputBuffers_, rnbo_.nInputs_, rnbo_.outputBuffers_, rnbo_.nOutputs_, bufferSize_);
     }
 }
