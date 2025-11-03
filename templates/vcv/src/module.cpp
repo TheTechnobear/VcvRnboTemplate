@@ -18,15 +18,14 @@
 
 
 // use the generic UI - disable by commenting out (with //)
-// to use your own UI you will need to : 
-// - comment GENERIC_UI out 
+// to use your own UI you will need to :
+// - comment GENERIC_UI out
 // - create a panel file (res/__MOD__.svg), which has params and IO in same order as rnbo patch
 // - run $RACK_DIR/helper.py createmodule __MOD__ res/__MOD__.svg tmp.cpp
 // - from tmp.cpp copy enum ParamId, InputId, OutputId and place in this file after enum LightId
 // - from tmp.cpp copy ___MOD__Widget and replace where indicated below (search CUSTOM WIDGET)
 // to come: more information in documentation and possible yt video on my channel.
 #define GENERIC_UI
-
 
 
 namespace RNBO {
@@ -67,7 +66,7 @@ const float spaceX = 15.f;
 
 struct __MOD__ : Module {
     enum LightId { LIGHTS_LEN };
-    //if you use a CUSTOM UI, this is where you need to add enum paramId, enum InputId, enum OutputId 
+    // if you use a CUSTOM UI, this is where you need to add enum paramId, enum InputId, enum OutputId
 
     __MOD__() {
         rnboInit();
@@ -245,41 +244,40 @@ struct __MOD__Widget : ModuleWidget {
         addChild(label);
     }
 };
-#else 
+#else
 // this is where you need to place the CUSTOM WIDGET
 // see above, about generating and creating struct __MOD__Widget
-#endif //  GENERIC_UI
+#endif  //  GENERIC_UI
 
 
 Model* model__MOD__ = createModel<__MOD__, __MOD__Widget>("__MOD__");
 
 void __MOD__::doProcess(const ProcessArgs& args) {
-    bool rnboProcess = (curBufPos_ == bufferSize_ - 1);
+    if (curBufPos_ >= bufferSize_) { curBufPos_ = 0; }
 
-    // process input
     for (int i = 0; i < rnbo_.nInputs_; i++) {
-        float input = inputs[i].getVoltage();
-        rnbo_.inputBuffers_[i][curBufPos_] = input;
+        if (inputs[i].isConnected()) {
+            rnbo_.inputBuffers_[i][curBufPos_] = inputs[i].getVoltage() / 5.f;
+        } else {
+            rnbo_.inputBuffers_[i][curBufPos_] = 0.f;
+        }
     }
+    for (int i = 0; i < rnbo_.nOutputs_; i++) { outputs[i].setVoltage(rnbo_.outputBuffers_[i][curBufPos_] * 5.f); }
 
-    if (rnboProcess) {
+    curBufPos_++;
+    // Perform when we've filled the buffer
+    if (curBufPos_ == bufferSize_) {
         // set parameters up for patch, only set on change
 
         for (int i = 0; i < rnbo_.nParams_; i++) {
             float param = params[i].getValue();
             if (rnbo_.lastParamVals_[i] != param) {
+                // INFO("set value %i %f", i, param);
                 rnbo_.patch_.setParameterValue(i, param, RNBO::TimeNow);
                 rnbo_.lastParamVals_[i] = param;
             }
         }
-
+        rnbo_.patch_.prepareToProcess(sampleRate_, bufferSize_, false);
         rnbo_.patch_.process(rnbo_.inputBuffers_, rnbo_.nInputs_, rnbo_.outputBuffers_, rnbo_.nOutputs_, bufferSize_);
-
-    }  // rnbo process
-
-    // send outputs
-    for (int i = 0; i < rnbo_.nOutputs_; i++) { outputs[i].setVoltage(rnbo_.outputBuffers_[i][curBufPos_]); }
-
-    curBufPos_++;
-    if (curBufPos_ >= bufferSize_) curBufPos_ = 0;
+    }
 }

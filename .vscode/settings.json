@@ -6,6 +6,16 @@
         "__locale": "cpp",
         "expected": "cpp",
         "new": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "barrier": "cpp",
+        "latch": "cpp",
+        "limits": "cpp",
+        "ratio": "cpp",
+        "semaphore": "cpp",
+        "valarray": "cpp",
+        "random": "cpp",
+        "chrono": "cpp",
+        "algorithm": "cpp",
+        "bitset": "cpp"
     }
 }
