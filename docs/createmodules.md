@@ -89,8 +89,8 @@ cmake --fresh -B build && cmake --build build
 *If build fails, run `python3 scripts/check.py` to verify your setup*
 
 ## 6. Run and test on your 4ms MetaModule 
-Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
-Restart 4ms metamodule, use scan plugins to find new plugin
+- Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
+- Restart 4ms metamodule, use scan plugins to find new plugin
 
 ## Development Tips
 
