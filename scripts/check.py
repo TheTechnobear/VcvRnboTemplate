@@ -57,7 +57,7 @@ def check_windows_terminal_environment():
     msys2_path = os.environ.get('MSYS2_PATH')
     msystem = os.environ.get('MSYSTEM')
     
-    if not msys2_path:
+    if msys2_path == "":
         print("   [ERROR] MSYS2_PATH environment variable not found")
         print("   [TOOL] You must run all scripts using MSYS2 MINGW64 terminal")
         print("   [TOOL] Look for 'MSYS2 MinGW 64-bit' in your Start Menu")
