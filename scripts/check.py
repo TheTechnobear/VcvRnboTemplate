@@ -67,15 +67,38 @@ def check_arm_compiler():
     else:
         print(f"[ERROR] ARM toolchain missing: {', '.join(missing)}")
         
-        # Windows-specific guidance
+        # Windows-specific checking and guidance
         if os.name == 'nt':  # Windows
-            print("   [NOTE] Windows users: Ensure ARM GNU Toolchain is installed and added to PATH")
-            print("   [TIP] Common install locations:")
-            print("      - C:\\Program Files (x86)\\Arm GNU Toolchain\\*\\bin")
-            print("      - C:\\Program Files\\Arm GNU Toolchain\\*\\bin")
-            print("   [TOOL] Add the toolchain bin directory to your system PATH environment variable")
+            check_windows_arm_toolchain()
         
         return False
+
+def check_windows_arm_toolchain():
+    """Check for specific Windows ARM toolchain installation"""
+    expected_path = Path("C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.3 rel1")
+    expected_bin_path = expected_path / "bin"
+    
+    print("   [NOTE] Windows ARM toolchain check:")
+    
+    if expected_path.exists():
+        print(f"   [PASS] Found ARM toolchain installation at: {expected_path}")
+        
+        # Check if it's in PATH
+        current_path = os.environ.get('PATH', '')
+        path_to_check = "/c/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/12.3 rel1/bin"
+        
+        if path_to_check in current_path:
+            print("   [PASS] ARM toolchain is correctly added to PATH")
+        else:
+            print("   [WARNING] ARM toolchain found but not in PATH")
+            print("   [TOOL] To fix this, run the following command each time you open MSYS64 terminal:")
+            print(f"          export PATH=/c/Program\\ Files\\ \\(x86\\)/Arm\\ GNU\\ Toolchain\\ arm-none-eabi/12.3\\ rel1/bin:$PATH")
+            print("   [TIP] Or add this to your ~/.bashrc file to make it permanent")
+    else:
+        print(f"   [ERROR] ARM toolchain not found at expected location: {expected_path}")
+        print("   [TOOL] Please install ARM GNU Toolchain 12.3 rel1 to:")
+        print("          C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\12.3 rel1")
+        print("   [TOOL] Then run this script again to verify installation")
 
 def check_environment_setup():
     """Check basic environment setup"""
