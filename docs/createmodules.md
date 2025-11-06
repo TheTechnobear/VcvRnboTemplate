@@ -90,7 +90,6 @@ cmake --fresh -B build && cmake --build build
 
 # Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
 
-```
 
 ## Development Tips
 
