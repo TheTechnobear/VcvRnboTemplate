@@ -104,7 +104,8 @@ This eliminates manual UI coding - the widget adapts to any RNBO patch's paramet
 
 **MetaModule (Hardware Target):** Uses CMake with ARM toolchain in base directory:
 - ARM toolchain configured in `CMakePresets.json`
-- Build with: `cmake --fresh -B build` then `cmake --build build`
+- **Windows**: Build with `cmake --fresh -B build -G "MSYS Makefiles"` then `cmake --build build`
+- **macOS/Linux**: Build with `cmake --fresh -B build` then `cmake --build build`
 - Requires MetaModule SDK and ARM GNU Toolchain
 
 ## Development Workflow
@@ -236,4 +237,5 @@ This pattern is essential for performance with RNBO patches.
 **Build System Debugging:**
 - VCV Rack: Check `CXXFLAGS += -std=c++17` and include paths
 - MetaModule: Verify ARM toolchain installation and CMake preset configuration
+- **Windows**: Use MSYS Makefiles generator: `cmake -G "MSYS Makefiles"`
 - Cross-platform: Test builds on both desktop (VCV) and hardware (MetaModule) targets

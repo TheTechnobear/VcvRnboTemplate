@@ -82,8 +82,13 @@ python3 scripts/addDemo.py
 cd VcvModules && make
 
 # Build for MetaModule
+# Windows (MSYS2)
+cd .. && cmake --fresh -B build -G "MSYS Makefiles" && cmake --build build
+
+# macOS/Linux  
 cd .. && cmake --fresh -B build && cmake --build build
 ```
+*If any build fails, run `python3 scripts/check.py` to verify your setup*
 
 If all builds succeed, you're ready to create modules!
 
@@ -92,6 +97,7 @@ If all builds succeed, you're ready to create modules!
 ```bash
 cd VcvModules && make dist
 ```
+*If build fails, run `python3 scripts/check.py` to verify your setup*
 
 Copy the generated plugin to your VCV Rack plugins directory and test the Demo module.
 

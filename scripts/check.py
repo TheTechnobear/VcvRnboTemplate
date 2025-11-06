@@ -47,6 +47,33 @@ def check_command_available(command, description):
         print(f"[ERROR] {description}")
         return False
 
+def check_windows_terminal_environment():
+    """Check that Windows users are running in the correct MSYS2 MINGW64 terminal"""
+    if os.name != 'nt':  # Not Windows
+        return True
+    
+    print("   [CHECK] Verifying MSYS2 MINGW64 terminal environment:")
+    
+    msys2_path = os.environ.get('MSYS2_PATH')
+    msystem = os.environ.get('MSYSTEM')
+    
+    if not msys2_path:
+        print("   [ERROR] MSYS2_PATH environment variable not found")
+        print("   [TOOL] You must run all scripts using MSYS2 MINGW64 terminal")
+        print("   [TOOL] Look for 'MSYS2 MinGW 64-bit' in your Start Menu")
+        print("   [TOOL] Do NOT use Command Prompt, PowerShell, or Git Bash")
+        return False
+    
+    if msystem != 'MINGW64':
+        print(f"   [ERROR] MSYSTEM is '{msystem}' but should be 'MINGW64'")
+        print("   [TOOL] You must run all scripts using MSYS2 MINGW64 terminal")
+        print("   [TOOL] Look for 'MSYS2 MinGW 64-bit' in your Start Menu")
+        print("   [TOOL] Do NOT use other MSYS2 terminals (MSYS, MINGW32, etc.)")
+        return False
+    
+    print("   [PASS] Running in correct MSYS2 MINGW64 terminal")
+    return True
+
 def check_arm_compiler():
     """Check for ARM compiler availability with Windows support"""
     arm_commands = [
@@ -70,6 +97,9 @@ def check_arm_compiler():
         # Windows-specific checking and guidance
         if os.name == 'nt':  # Windows
             check_windows_arm_toolchain()
+        else:
+            # Non-Windows systems
+            print("   [TOOL] Install ARM GNU Toolchain (arm-none-eabi-gcc)")
         
         return False
 
@@ -93,12 +123,52 @@ def check_windows_arm_toolchain():
             print("   [WARNING] ARM toolchain found but not in PATH")
             print("   [TOOL] To fix this, run the following command each time you open MSYS64 terminal:")
             print(f"          export PATH=/c/Program\\ Files\\ \\(x86\\)/Arm\\ GNU\\ Toolchain\\ arm-none-eabi/12.3\\ rel1/bin:$PATH")
-            print("   [TIP] Or add this to your ~/.bashrc file to make it permanent")
+            
+            # Offer to add to .bashrc automatically
+            try:
+                response = input("\n   Would you like me to add this to your ~/.bashrc file automatically? (y/n): ").strip().lower()
+                if response in ['y', 'yes']:
+                    add_to_bashrc(path_to_check)
+                else:
+                    print("   [TIP] You can manually add this to your ~/.bashrc file to make it permanent")
+            except (EOFError, KeyboardInterrupt):
+                print("\n   [TIP] You can manually add this to your ~/.bashrc file to make it permanent")
     else:
         print(f"   [ERROR] ARM toolchain not found at expected location: {expected_path}")
         print("   [TOOL] Please install ARM GNU Toolchain 12.3 rel1 to:")
         print("          C:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\12.3 rel1")
         print("   [TOOL] Then run this script again to verify installation")
+
+def add_to_bashrc(arm_path):
+    """Add ARM toolchain path to ~/.bashrc"""
+    try:
+        home_dir = Path.home()
+        bashrc_path = home_dir / ".bashrc"
+        
+        # Prepare the line to add
+        export_line = f"export PATH={arm_path}:$PATH"
+        comment_line = "# ARM GNU Toolchain for VCV Rack RNBO Template MetaModule builds"
+        
+        # Check if already exists
+        if bashrc_path.exists():
+            with open(bashrc_path, 'r') as f:
+                content = f.read()
+            if arm_path in content:
+                print("   [OK] ARM toolchain path already exists in ~/.bashrc")
+                return
+        
+        # Add to .bashrc
+        with open(bashrc_path, 'a') as f:
+            f.write(f"\n{comment_line}\n{export_line}\n")
+        
+        print("   [OK] Added ARM toolchain to ~/.bashrc")
+        print("   [NOTE] You will need to restart your MSYS64 terminal for this to take effect")
+        print("   [TIP] Or run: source ~/.bashrc")
+        
+    except Exception as e:
+        print(f"   [ERROR] Failed to add to ~/.bashrc: {e}")
+        print("   [TIP] You can manually add this line to your ~/.bashrc:")
+        print(f"          {export_line}")
 
 def check_environment_setup():
     """Check basic environment setup"""
@@ -107,6 +177,10 @@ def check_environment_setup():
     
     project_root = Path.cwd()
     issues = []
+    
+    # Check Windows terminal environment first
+    if not check_windows_terminal_environment():
+        issues.append("Use MSYS2 MINGW64 terminal (see guidance above)")
     
     # Check MetaModule SDK
     metamodule_version = project_root / "metamodule-plugin-sdk" / "version.hh"
@@ -127,10 +201,8 @@ def check_environment_setup():
     
     # Check ARM compiler
     if not check_arm_compiler():
-        if os.name == 'nt':  # Windows
-            issues.append("Install ARM GNU Toolchain and add to PATH (see Windows-specific guidance above)")
-        else:
-            issues.append("Install ARM GNU Toolchain (arm-none-eabi-gcc)")
+        # Don't add generic advice here since check_arm_compiler() provides specific guidance
+        pass
     
     if issues:
         print(f"\n[ERROR] Environment setup issues found:")
@@ -278,7 +350,10 @@ def check_project_status():
         print(f"\n[SUCCESS] All modules are complete and ready to build!")
         print("\n[NEXT] Next steps:")
         print("   1. Build VCV Rack: cd VcvModules && make")
-        print("   2. Build MetaModule: cmake --fresh -B build && cmake --build build")
+        if os.name == 'nt':  # Windows
+            print("   2. Build MetaModule: cmake --fresh -B build -G \"MSYS Makefiles\" && cmake --build build")
+        else:  # macOS/Linux
+            print("   2. Build MetaModule: cmake --fresh -B build && cmake --build build")
     else:
         print(f"\n[ERROR] Issues found with modules:")
         for i, issue in enumerate(issues, 1):

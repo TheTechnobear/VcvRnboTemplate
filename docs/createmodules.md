@@ -69,6 +69,7 @@ In Max, export your RNBO patch with these **exact settings**:
 ```bash
 cd VcvModules && make
 ```
+*If build fails, run `python3 scripts/check.py` to verify your setup*
 
 **Test in VCV Rack (Recommended):**
 copy and install plugin into VCV rack
@@ -78,19 +79,17 @@ make install
 
 **Build for MetaModule:**
 ```bash
-cd .. && cmake --fresh -B build && cmake --build build
-# Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
-```
+# Windows (MSYS2)
+cmake --fresh -B build -G "MSYS Makefiles" && cmake --build build
 
-Remember: 
-before runninng this, ARM toolchain must be on your path!
-Windows : 
-```bash
-export PATH=/c/Program\ Files\ \(x86\)/Arm\ GNU\ Toolchain\ arm-none-eabi/12.3\ rel1/bin:$PATH
+# macOS/Linux
+cmake --fresh -B build && cmake --build build
+
 ```
-macOs : 
-```bash
-export PATH=/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin:$PATH
+*If build fails, run `python3 scripts/check.py` to verify your setup*
+
+# Copy .mmplugin to MetaModule SD card into metamodule-plugins directory
+
 ```
 
 ## Development Tips

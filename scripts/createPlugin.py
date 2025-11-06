@@ -224,7 +224,10 @@ def main():
         print("Next steps:")
         print("1. Use createModule.py to add modules to your plugin")
         print("2. Build for VCV Rack: cd VcvModules && make")
-        print("3. Build for MetaModule: cmake --fresh -B build && cmake --build build")
+        if os.name == 'nt':  # Windows
+            print("3. Build for MetaModule: cmake --fresh -B build -G \"MSYS Makefiles\" && cmake --build build")
+        else:  # macOS/Linux
+            print("3. Build for MetaModule: cmake --fresh -B build && cmake --build build")
         
     except KeyboardInterrupt:
         print("\n\nOperation cancelled by user.")
