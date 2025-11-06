@@ -142,8 +142,12 @@ def check_windows_arm_toolchain():
 def add_to_bashrc(arm_path):
     """Add ARM toolchain path to ~/.bashrc"""
     try:
-        home_dir = Path.home()
-        bashrc_path = home_dir / ".bashrc"
+        # Use $HOME environment variable instead of Path.home() for MSYS2 compatibility
+        home_dir = os.environ.get('HOME')
+        if not home_dir:
+            raise Exception("HOME environment variable not set")
+        
+        bashrc_path = Path(home_dir) / ".bashrc"
         
         # Prepare the line to add
         export_line = f"export PATH={arm_path}:$PATH"
@@ -154,14 +158,14 @@ def add_to_bashrc(arm_path):
             with open(bashrc_path, 'r') as f:
                 content = f.read()
             if arm_path in content:
-                print("   [OK] ARM toolchain path already exists in ~/.bashrc")
+                print(f"   [OK] ARM toolchain path already exists in {bashrc_path}")
                 return
         
         # Add to .bashrc
         with open(bashrc_path, 'a') as f:
             f.write(f"\n{comment_line}\n{export_line}\n")
         
-        print("   [OK] Added ARM toolchain to ~/.bashrc")
+        print(f"   [OK] Added ARM toolchain to {bashrc_path}")
         print("   [NOTE] You will need to restart your MSYS64 terminal for this to take effect")
         print("   [TIP] Or run: source ~/.bashrc")
         
