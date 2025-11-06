@@ -149,15 +149,18 @@ def add_to_bashrc(arm_path):
         
         bashrc_path = Path(home_dir) / ".bashrc"
         
+        # Use the properly escaped path for bash
+        escaped_arm_path = "/c/Program\\ Files\\ \\(x86\\)/Arm\\ GNU\\ Toolchain\\ arm-none-eabi/12.3\\ rel1/bin"
+        
         # Prepare the line to add
-        export_line = f"export PATH={arm_path}:$PATH"
+        export_line = f"export PATH={escaped_arm_path}:$PATH"
         comment_line = "# ARM GNU Toolchain for VCV Rack RNBO Template MetaModule builds"
         
-        # Check if already exists
+        # Check if already exists (check for the escaped path)
         if bashrc_path.exists():
             with open(bashrc_path, 'r') as f:
                 content = f.read()
-            if arm_path in content:
+            if escaped_arm_path in content:
                 print(f"   [OK] ARM toolchain path already exists in {bashrc_path}")
                 return
         
