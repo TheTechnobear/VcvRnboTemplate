@@ -25,10 +25,16 @@ use defaults when installing.
 
 Ensure it's on your PATH everytime you start a terminal/MSYS2
 
-e.g. for windows using MSYS32, assuming default install
+e.g. 
+for windows using MSYS32, assuming default install
 ```bash 
 export PATH=/c/Program\ Files\ \(x86\)/Arm\ GNU\ Toolchain\ arm-none-eabi/12.3\ rel1/bin:$PATH
 ```
+for macOs, assuming defailt install
+```bash
+export PATH="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin:${PATH}"
+```
+
 
 ### 2. Get the Project
 
