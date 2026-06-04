@@ -23,12 +23,10 @@ Download ARM GNU Toolchain 12.3 from [ARM Developer Downloads](https://developer
 Get the package for your host computer ending in `arm-none-eabi`, you can use the exe for windows, and pkg for mac. 
 use defaults when installing.
 
-Ensure it's on your PATH everytime you start a terminal/MSYS2
+**Setup your path**
+To ensure you the correct version of the tools you have installed above you will want to set up your path correctly,
+every time you use these tools - see section at the base of this page.
 
-e.g. for windows using MSYS32, assuming default install
-```bash 
-export PATH=/c/Program\ Files\ \(x86\)/Arm\ GNU\ Toolchain\ arm-none-eabi/12.3\ rel1/bin:$PATH
-```
 
 ### 2. Get the Project
 
@@ -120,7 +118,18 @@ python3 scripts/removeModule.py Demo
 
 ## Tips - Terminal/Command Line Setup
 
-This project uses command line tools. You'll need to open a terminal and run text commands.
+**💡 Tip**: You can usually copy-paste commands directly from this guide into your terminal.
+
+### Basic Terminal Usage
+- Commands are the text shown in code blocks (e.g., `python3 scripts/check.py`)
+- Type or copy-paste commands and press Enter
+- Use `cd [directory]` to change directories
+- Use `ls`
+
+
+This project uses command line tools. You'll need to open a terminal and run text commands, 
+
+you will also need to ensure, that your path is set correctly, to ensure correct versions of tools are used.
 
 ### Windows Users ⚠️
 **Critical**: Install [MSYS2](https://www.msys2.org/) and **always use the MinGW 64-bit shell** from the Start menu for all commands in this guide. 
@@ -130,18 +139,81 @@ This project uses command line tools. You'll need to open a terminal and run tex
 
 The VCV Rack setup guide will walk you through MSYS2 installation.
 
+It's important to note we are using MSYS2 as a terminal for windows usage, this provides a 'unix like' experience.
+so if you need help with using the terminal, guides on the 'windows terminal/power sheel' are not useful.
+instead, you need check on MSYS2 website, or even linux terminal usage.
+
+why do we use msys2? vcv dev tools are based on/require it.
+why did vcv use it? because this means tools/scripts between mac/linux and windows can be similar.
+
+
+
+
+#### Setting path
+you will need to add the arm toolchain you installed to your path.
+assuming you installed to the default location you can use.
+```bash 
+export PATH=/c/Program\ Files\ \(x86\)/Arm\ GNU\ Toolchain\ arm-none-eabi/12.3\ rel1/bin:$PATH
+```
+
+#### Keeping path across sessions (optional)
+if you enter the above, you will have to do this every time you start a session.
+if you wish to 'save' this, you can add this to .bash_profile
+by default you'll find it here:  ```C:\MSYS2\home\[username]`\.bash_profile```
+
+-----
+
 ### macOS Users  
 Use the built-in **Terminal** app (Applications → Utilities → Terminal).
+first, we need to add homebrew to our path, this varies based on your mac.
+apple silicon 
+```bash
+export PATH="/opt/homebrew/bin:${PATH}"
+```
+intel macs
+```bash
+export PATH="/opt/local/bin:${PATH}"
+```
+
+next, you will need to add the arm toolchain you installed to your path.
+make sure use use the directory you installed to.
+e.g.
+```bash
+export PATH="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin:${PATH}"
+```
+
+#### Keeping path across sessions (optional)
+if you enter the above, you will have to do this every time you start a session.
+if you wish to 'save' this, you can add this to your.zshrc in your home directory
+e.g ```/Users/[username]/.zshrc```
+
+note: older versions of macOS use .bash_profile instead.
+
+videos/chatgpt can show you how search for "how to change your path on macos".
+
+
+-----
 
 ### Linux Users
 Use your distribution's terminal (usually Ctrl+Alt+T).
 
-### Basic Terminal Usage
-- Commands are the text shown in code blocks (e.g., `python3 scripts/check.py`)
-- Type or copy-paste commands and press Enter
-- Use `cd [directory]` to change directories
-- Use `ls` (Mac/Linux) or `dir` (Windows) to list files
+On Linux, tools are usually added to your path automatically.
+if you get errors you may need to add or edit your path, 
+unfortunately, this will be dependent on the shell you use (bash/zsh etc) and install location.
+so is beyond the scope of this guide. 
+however, there are many resources online that can help you set this up correctly 
 
-**💡 Tip**: You can usually copy-paste commands directly from this guide into your terminal.
+note: if you get errors, that are not 'command not found' (etc), check that the correct version of the tool is being used.
+useful command to debug errors : 
+- use ```which [command]``` to determine find where a command is being picked up from.
+- use ```echo $PATH``` to see what your current path is.
+
+generally, Id consider Linux for more advance users that are familar with command line usage, as this is the nature of the beast for linux.
+
+
+
+
+
+
 
 
