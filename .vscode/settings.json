@@ -17,5 +17,6 @@
         "chrono": "cpp",
         "algorithm": "cpp",
         "bitset": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/Users/kodiak/projects/VcvRnboTemplate/metamodule-plugin-sdk"
 }
